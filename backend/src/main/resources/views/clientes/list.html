@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${title}">Clientes</title>
+    <link rel="stylesheet" href="/css/app.css">
+</head>
+<body>
+    <div th:replace="fragments/navbar :: navbar"></div>
+
+    <main class="container">
+        <section class="page-header">
+            <div>
+                <h1>Clientes</h1>
+                <p>Cadastro e consulta de clientes do sistema.</p>
+            </div>
+
+            <a class="btn btn-primary" href="/clientes/novo">Novo cliente</a>
+        </section>
+
+        <section class="card">
+            <div th:if="${#lists.isEmpty(clientes)}" class="empty-state">
+                Nenhum cliente cadastrado.
+            </div>
+
+            <div th:if="${not #lists.isEmpty(clientes)}" class="table-wrapper">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nome</th>
+                            <th>CPF</th>
+                            <th>RG</th>
+                            <th>Profissão</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="cliente : ${clientes}">
+                            <td th:text="${cliente.id}">1</td>
+                            <td th:text="${cliente.nome}">Nome</td>
+                            <td th:text="${cliente.cpf}">00000000000</td>
+                            <td th:text="${cliente.rg}">MG000000</td>
+                            <td th:text="${cliente.profissao}">Profissão</td>
+                            <td class="actions-inline">
+                                <a class="btn btn-secondary btn-sm"
+                                   th:href="@{/clientes/{id}/editar(id=${cliente.id})}">
+                                    Editar
+                                </a>
+
+                                <form th:action="@{/clientes/{id}/remover(id=${cliente.id})}"
+                                      method="post">
+                                    <button class="btn btn-danger btn-sm" type="submit">
+                                        Remover
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+</body>
+</html>

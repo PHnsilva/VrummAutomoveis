@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${title}">Vrumm Automóveis</title>
+    <link rel="stylesheet" href="/css/app.css">
+</head>
+<body>
+    <div th:replace="fragments/navbar :: navbar"></div>
+
+    <main class="container">
+        <section class="hero">
+            <span class="badge">Sprint 2</span>
+            <h1 th:text="${title}">Vrumm Automóveis</h1>
+            <p th:text="${subtitle}">Sistema de Aluguel de Carros</p>
+
+            <div class="actions">
+                <a class="btn btn-primary" href="/clientes">Ver clientes</a>
+                <a class="btn btn-secondary" href="/clientes/novo">Cadastrar cliente</a>
+            </div>
+        </section>
+    </main>
+</body>
+</html>
