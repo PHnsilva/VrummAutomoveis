@@ -19,13 +19,351 @@ body {
 .navbar {
   height: 60px;
   display: flex;
-  justify-content: center;
-  align-items: space-between;
-  flex-direction: column;
+justify-content: space-between;  /* space-between aqui */
+  align-items: center;              /* center para alinhar verticalmente */
+  flex-direction: row; 
   padding: 0PX 60px;
   border-bottom: 1px solid #e8e8e8;
   text-align: center;
 }
+
+.navbar h1 {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.user-menu {
+    position: relative;
+}
+
+.avatar-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #1a1a1a;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.15s ease, filter 0.15s ease;
+}
+
+.avatar-btn:hover {
+    filter: brightness(1.3);
+    transform: translateY(-1px);
+}
+
+.dropdown {
+    display: none;
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px;
+    border: 1px solid #e0e0e0;
+    min-width: 160px;
+    padding: 0.5rem;
+    z-index: 999;
+}
+
+.dropdown.active {
+    display: block;
+}
+
+.dropdown a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0.65rem 1rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 0.88rem;
+    color: #1a1a1a;
+    font-weight: 500;
+    transition: background 0.15s;
+}
+
+.dropdown a:hover {
+    background: #f5f5f5;
+}
+
+.dropdown a:last-child {
+    color: #e74c3c;
+}
+
+.dropdown a:last-child:hover {
+    background: #fff0f0;
+}
+
+.account-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: transparent;
+    z-index: 999;
+    justify-content: flex-end;
+    align-items: flex-start;
+    padding-top: 70px;
+    padding-right: 60px;
+}
+
+.account-overlay.active {
+    display: flex;
+}
+
+.account-modal {
+    background: #fff;
+    border-radius: 20px;
+    padding: 2rem 2.5rem 2.5rem;
+    width: 100%;
+    max-width: 340px;
+    position: relative;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px;
+    border: 1px solid #e0e0e0;
+    animation: popIn 0.2s ease;
+}
+
+.avatar-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    gap: 6px;
+}
+
+.avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: #1a1a1a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 4px;
+}
+
+.avatar svg {
+    width: 32px;
+    height: 32px;
+    fill: #fff;
+}
+
+.avatar-name {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #1a1a1a;
+}
+
+.avatar-email {
+    font-size: 0.78rem;
+    color: #aaa;
+}
+
+.divider {
+    height: 1px;
+    background: #f0f0f0;
+    margin: 0 0 1rem;
+}
+
+.section-title {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: #bbb;
+    font-weight: 500;
+    margin-bottom: 0.75rem;
+}
+
+.field-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.65rem 0;
+    border-bottom: 1px solid #f5f5f5;
+    cursor: pointer;
+}
+
+.field-row:last-child { border-bottom: none; }
+
+.field-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.field-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: #f5f5f5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.field-icon svg {
+    width: 15px;
+    height: 15px;
+    fill: #888;
+}
+
+.field-info {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+}
+
+.field-label {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #1a1a1a;
+}
+
+.field-value {
+    font-size: 0.75rem;
+    color: #bbb;
+}
+
+.field-arrow {
+    color: #ccc;
+    font-size: 1rem;
+}
+
+.edit-section {
+    display: none;
+}
+
+.edit-section.active {
+    display: block;
+}
+
+.back-btn {
+    background: none;
+    border: none;
+    font-size: 0.8rem;
+    color: #888;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-bottom: 1.2rem;
+    padding: 0;
+    font-family: 'Bitter', sans-serif;
+}
+
+.back-btn:hover { color: #1a1a1a; }
+
+.edit-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin-bottom: 1.2rem;
+}
+
+.save-btn {
+    width: 100%;
+    background: #1a1a1a;
+    color: #fff;
+    border: none;
+    border-radius: 32px;
+    padding: 0.75rem;
+    font-size: 0.88rem;
+    font-weight: 600;
+    font-family: 'Bitter', sans-serif;
+    cursor: pointer;
+    margin-top: 0.5rem;
+    transition: filter 0.15s, transform 0.15s;
+}
+
+.save-btn:hover { filter: brightness(1.3); transform: translateY(-1px); }
+.save-btn:active { transform: translateY(0); filter: brightness(0.95); }
+
+.success-msg {
+    display: none;
+    text-align: center;
+    font-size: 0.8rem;
+    color: #27ae60;
+    margin-top: 0.6rem;
+}
+
+
+@keyframes popIn {
+    from { transform: scale(0.95) translateY(-8px); opacity: 0; }
+    to { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+.edit-section.active {
+    display: flex;
+    flex-direction: column;
+}
+
+.edit-section .form-group {
+    margin-bottom: 1.5rem;
+}
+.edit-section .form-group input {
+    padding: 0.85rem 1rem;
+    border-radius: 12px;
+    background: #fafafa;
+    transition: border 0.2s, box-shadow 0.2s;
+    width: 100%;
+}
+
+.edit-section .form-group input:focus {
+    border-color: #1a1a1a;
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(0,0,0,0.05);
+    outline: none;
+}
+
+.edit-section .form-group label {
+    display: block;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: #bbb;
+    margin-bottom: 8px;
+}
+
+
+.dropdown {
+    transform-origin: top right;
+}
+
+.account-modal {
+    transform-origin: top right;
+}
+
+@keyframes popOut {
+    from { transform: scale(1) translateY(0); opacity: 1; }
+    to { transform: scale(0.95) translateY(-8px); opacity: 0; }
+}
+
+@keyframes slideOutLeft {
+    from { transform: translateX(0); opacity: 1; }
+    to { transform: translateX(-24px); opacity: 0; }
+}
+
+@keyframes slideInRight {
+    from { transform: translateX(24px); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes slideOutRight {
+    from { transform: translateX(0); opacity: 1; }
+    to { transform: translateX(24px); opacity: 0; }
+}
+
+@keyframes slideInLeft {
+    from { transform: translateX(-24px); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+
+
+
 
 /* Conteúdo central */
 .content {
@@ -44,3 +382,10 @@ body {
   flex-direction: column;
   text-align: center;
 }
+
+.footer p {
+  font-size: 0.8rem;
+  color: #888;
+}
+
+

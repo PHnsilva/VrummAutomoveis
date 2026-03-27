@@ -6,10 +6,10 @@
     <title>Landing Page</title>
     <link rel="stylesheet" th:href="@{/css/pages/landing.css}">
     <link rel="stylesheet" th:href="@{/css/fragments/auth-modal.css}">
-    <script th:src="@{/js/fragments/auth-modal.js}"></script></head>
+</head>
 
 <body>
-
+    
     <!-- Navbar -->
     <div class="navbar">
         <div class="logo">
@@ -19,7 +19,7 @@
             <a href="#" class="btn" onclick="openModal(); return false;">Access</a>
         </div>
     </div>
-
+    
     <!-- Conteúdo -->
     <main class="content">
         <div class="left">
@@ -30,11 +30,12 @@
             <img th:src="@{/images/landing-car.png}" alt="Carro de Luxo">
         </div>
     </main>
-
-
-
+    
+    
+    
     <!-- Modal de login -->
     <div th:replace="~{fragments/auth-modal :: authModal}"></div>
+    <script th:src="@{/js/fragments/auth-modal.js}"></script>
 </body>
 
 </html>

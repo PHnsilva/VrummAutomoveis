@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      th:fragment="layout(title, content)">
+<html xmlns:th="http://www.thymeleaf.org" th:fragment="layout(title, content)">
 
 <head>
     <meta charset="UTF-8">
@@ -10,16 +9,148 @@
 
 <body>
 
-    <!-- Navbar -->
     <div th:replace="~{fragments/navbar :: navbar}"></div>
 
-    <!-- Conteúdo -->
     <main class="content">
         <div th:replace="${content}"></div>
     </main>
 
-    <!-- Footer -->
     <div th:replace="~{fragments/footer :: footer}"></div>
 
+    <div class="account-overlay" id="account-modal">
+    <div class="account-modal">
+
+        <div id="main-view">
+            <div class="avatar-wrap">
+                <div class="avatar">
+                    <svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
+                </div>
+                <div class="avatar-name">João Silva</div>
+                <div class="avatar-email">joao@email.com</div>
+            </div>
+
+            <div class="divider"></div>
+            <div class="section-title">Dados pessoais</div>
+
+            <div class="field-row" onclick="openEdit('name')">
+                <div class="field-left">
+                    <div class="field-icon">
+                        <svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
+                    </div>
+                    <div class="field-info">
+                        <span class="field-label">Nome</span>
+                        <span class="field-value">João Silva</span>
+                    </div>
+                </div>
+                <span class="field-arrow">›</span>
+            </div>
+
+            <div class="field-row" onclick="openEdit('email')">
+                <div class="field-left">
+                    <div class="field-icon">
+                        <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+                    </div>
+                    <div class="field-info">
+                        <span class="field-label">E-mail</span>
+                        <span class="field-value">joao@email.com</span>
+                    </div>
+                </div>
+                <span class="field-arrow">›</span>
+            </div>
+
+            <div class="field-row" onclick="openEdit('phone')">
+                <div class="field-left">
+                    <div class="field-icon">
+                        <svg viewBox="0 0 24 24"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z"/></svg>
+                    </div>
+                    <div class="field-info">
+                        <span class="field-label">Telefone</span>
+                        <span class="field-value">Não informado</span>
+                    </div>
+                </div>
+                <span class="field-arrow">›</span>
+            </div>
+
+            <div class="divider" style="margin-top: 1rem;"></div>
+            <div class="section-title">Segurança</div>
+
+            <div class="field-row" onclick="openEdit('password')">
+                <div class="field-left">
+                    <div class="field-icon">
+                        <svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.8-2.2-5-5-5S7 3.2 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.7 1.4-3.1 3.1-3.1 1.7 0 3.1 1.4 3.1 3.1v2z"/></svg>
+                    </div>
+                    <div class="field-info">
+                        <span class="field-label">Senha</span>
+                        <span class="field-value">••••••••</span>
+                    </div>
+                </div>
+                <span class="field-arrow">›</span>
+            </div>
+        </div>
+
+        <!-- editar nome -->
+        <div class="edit-section" id="edit-name">
+            <button class="back-btn" onclick="goBack()">‹ Voltar</button>
+            <div class="edit-title">Editar nome</div>
+            <div class="form-group">
+                <label>Nome</label>
+                <input type="text" placeholder="João" value="João">
+            </div>
+            <div class="form-group">
+                <label>Sobrenome</label>
+                <input type="text" placeholder="Silva" value="Silva">
+            </div>
+            <button class="save-btn" onclick="saveField('name')">Salvar</button>
+            <div class="success-msg" id="success-name">Salvo com sucesso!</div>
+        </div>
+
+        <!-- editar email -->
+        <div class="edit-section" id="edit-email">
+            <button class="back-btn" onclick="goBack()">‹ Voltar</button>
+            <div class="edit-title">Editar e-mail</div>
+            <div class="form-group">
+                <label>Novo e-mail</label>
+                <input type="email" placeholder="novo@email.com" value="joao@email.com">
+            </div>
+            <button class="save-btn" onclick="saveField('email')">Salvar</button>
+            <div class="success-msg" id="success-email">Salvo com sucesso!</div>
+        </div>
+
+        <!-- editar telefone -->
+        <div class="edit-section" id="edit-phone">
+            <button class="back-btn" onclick="goBack()">‹ Voltar</button>
+            <div class="edit-title">Editar telefone</div>
+            <div class="form-group">
+                <label>Telefone</label>
+                <input type="tel" placeholder="(11) 99999-9999">
+            </div>
+            <button class="save-btn" onclick="saveField('phone')">Salvar</button>
+            <div class="success-msg" id="success-phone">Salvo com sucesso!</div>
+        </div>
+
+        <!-- editar senha -->
+        <div class="edit-section" id="edit-password">
+            <button class="back-btn" onclick="goBack()">‹ Voltar</button>
+            <div class="edit-title">Alterar senha</div>
+            <div class="form-group">
+                <label>Senha atual</label>
+                <input type="password" placeholder="••••••••">
+            </div>
+            <div class="form-group">
+                <label>Nova senha</label>
+                <input type="password" placeholder="••••••••">
+            </div>
+            <div class="form-group">
+                <label>Confirmar nova senha</label>
+                <input type="password" placeholder="••••••••">
+            </div>
+            <button class="save-btn" onclick="saveField('password')">Salvar</button>
+            <div class="success-msg" id="success-password">Senha alterada com sucesso!</div>
+        </div>
+    </div>
+</div>
+
+    <script th:src="@{/js/fragments/navbar.js}"></script>
 </body>
+
 </html>
