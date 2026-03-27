@@ -1,11 +1,13 @@
 package com.vrumm.dto;
 
 import io.micronaut.core.annotation.Introspected;
+import io.micronaut.serde.annotation.Serdeable;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 @Introspected
+@Serdeable.Deserializable
 public class ClienteForm {
 
     @NotBlank

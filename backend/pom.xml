@@ -23,6 +23,7 @@
     <micronaut.aot.packageName>com.vrumm.aot.generated</micronaut.aot.packageName>
     <micronaut.test.resources.enabled>true</micronaut.test.resources.enabled>
     <exec.mainClass>com.vrumm.Application</exec.mainClass>
+      <micronaut.openapi.version>6.13.2</micronaut.openapi.version>
   </properties>
 
   <repositories>
@@ -137,6 +138,12 @@
       <scope>test</scope>
     </dependency>
 
+      <dependency>
+          <groupId>io.micronaut.openapi</groupId>
+          <artifactId>micronaut-openapi-annotations</artifactId>
+          <scope>provided</scope>
+      </dependency>
+
   </dependencies>
   <build>
     <plugins>
@@ -208,10 +215,16 @@
                 </exclusion>
               </exclusions>
             </path>
+              <path>
+                  <groupId>io.micronaut.openapi</groupId>
+                  <artifactId>micronaut-openapi</artifactId>
+                  <version>${micronaut.openapi.version}</version>
+              </path>
           </annotationProcessorPaths>
           <compilerArgs>
             <arg>-Amicronaut.processing.group=com.vrumm</arg>
             <arg>-Amicronaut.processing.module=vrummAutomoveis</arg>
+              <arg>-Amicronaut.openapi.views.spec=swagger-ui.enabled=true,swagger-ui.theme=flattop</arg>
           </compilerArgs>
         </configuration>
       </plugin>

@@ -13,6 +13,8 @@ import io.micronaut.http.annotation.PathVariable;
 import io.micronaut.http.annotation.Post;
 import io.micronaut.views.ModelAndView;
 import io.micronaut.views.View;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 import java.net.URI;
@@ -20,6 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+@Tag(name = "clientes")
 @Controller("/clientes")
 public class ClienteController {
 
@@ -29,6 +32,7 @@ public class ClienteController {
         this.clienteService = clienteService;
     }
 
+    @Operation(summary = "Lista os clientes")
     @Get
     @View("clientes/list")
     public Map<String, Object> listar() {
@@ -38,6 +42,7 @@ public class ClienteController {
         return model;
     }
 
+    @Operation(summary = "Abre o formulário de novo cliente")
     @Get("/novo")
     @View("clientes/form")
     public Map<String, Object> novo() {
@@ -48,6 +53,7 @@ public class ClienteController {
         return model;
     }
 
+    @Operation(summary = "Salva um novo cliente")
     @Post
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public HttpResponse<?> salvar(@Body @Valid ClienteForm form) {
@@ -55,6 +61,7 @@ public class ClienteController {
         return HttpResponse.seeOther(URI.create("/clientes"));
     }
 
+    @Operation(summary = "Abre o formulário de edição de cliente")
     @Get("/{id}/editar")
     @View("clientes/form")
     public ModelAndView<Map<String, Object>> editar(@PathVariable Long id) {
@@ -72,7 +79,7 @@ public class ClienteController {
         Cliente cliente = clienteOpt.get();
         ClienteForm form = new ClienteForm();
         form.setNome(cliente.getNome());
-        form.setCpf(cliente.getCpf());
+        form.setCpf(cliente.getCpf().getValor());
         form.setRg(cliente.getRg());
         form.setProfissao(cliente.getProfissao());
 
@@ -84,6 +91,7 @@ public class ClienteController {
         ));
     }
 
+    @Operation(summary = "Atualiza um cliente existente")
     @Post("/{id}/editar")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public HttpResponse<?> atualizar(@PathVariable Long id, @Body @Valid ClienteForm form) {
@@ -91,6 +99,7 @@ public class ClienteController {
         return HttpResponse.seeOther(URI.create("/clientes"));
     }
 
+    @Operation(summary = "Remove um cliente")
     @Post("/{id}/remover")
     public HttpResponse<?> remover(@PathVariable Long id) {
         clienteService.remover(id);
