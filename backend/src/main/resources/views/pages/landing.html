@@ -1,18 +1,40 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <title>Landing Page</title>
-    <link rel="stylesheet" th:href="@{/css/landing.css}">
-</head>
+    <link rel="stylesheet" th:href="@{/css/pages/landing.css}">
+    <link rel="stylesheet" th:href="@{/css/fragments/auth-modal.css}">
+    <script th:src="@{/js/fragments/auth-modal.js}"></script></head>
+
 <body>
 
-    <!-- Hero -->
-    <section class="hero">
-        <h1>Minha Plataforma</h1>
-        <p>Organize suas memórias de forma simples</p>
+    <!-- Navbar -->
+    <div class="navbar">
+        <div class="logo">
+            <h1>Vrum</h1>
+        </div>
+        <div class="buttons">
+            <a href="#" class="btn" onclick="openModal(); return false;">Access</a>
+        </div>
+    </div>
 
-        <a href="/home" class="btn">Entrar</a>
-    </section>
+    <!-- Conteúdo -->
+    <main class="content">
+        <div class="left">
+            <h1>Amazing<br> Cars rental near you</h1>
+            <p>Don't stop yourself from the pleasure of driving the best confortable cars from around the world here and now</p>
+        </div>
+        <div class="right">
+            <img th:src="@{/images/landing-car.png}" alt="Carro de Luxo">
+        </div>
+    </main>
+
+
+
+    <!-- Modal de login -->
+    <div th:replace="~{fragments/auth-modal :: authModal}"></div>
 </body>
+
 </html>
