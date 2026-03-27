@@ -63,6 +63,8 @@ body {
   display: flex;
 }
 
+
+
 .content .left {
   flex: .6;
   display: flex;
@@ -92,4 +94,13 @@ body {
   font-weight: 400;
   text-align: left;
   margin: 40px 0px;
+}
+
+
+  
+@media (max-width: 800px) {
+  .content {
+    flex-direction: column;
+    padding: 0px 20px; 
+  }
 }
