@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Clientes</title>
+</head>
+
+<body>
+
+    <h1>Lista de Clientes</h1>
+
+    <a href="/clientes/novo">Novo Cliente</a>
+
+    <table border="1">
+        <tr>
+            <th>Nome</th>
+            <th>Email</th>
+            <th>Ações</th>
+        </tr>
+
+        <tr th:each="cliente : ${clientes}" th:if="${cliente != null}">
+            <td th:text="${cliente.nome}">Nome</td>
+            <td th:text="${cliente.email}">Email</td>
+            <td>
+                <a th:href="@{/clientes/{id}/editar(id=${cliente.id})}">Editar</a>
+                <form th:action="@{/clientes/{id}/delete(id=${cliente.id})}" method="post">
+                    <button type="submit" onclick="return confirm('Tem certeza?')">Excluir</button>
+                </form>
+            </td>
+        </tr>
+    </table>
+
+</body>
+
+</html>

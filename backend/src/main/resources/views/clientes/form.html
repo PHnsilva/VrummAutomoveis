@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Cliente</title>
+</head>
+<body>
+<h1 th:text="${id == null} ? 'Novo Cliente' : 'Editar Cliente'"></h1>
+<form th:action="${id == null} ? '/clientes' : '/clientes/' + ${id}" method="post">
+
+    <label>Nome:</label>
+    <input type="text" name="nome" th:value="${cliente.nome}" />
+
+    <label>Email:</label>
+    <input type="email" name="email" th:value="${cliente.email}" />
+
+    <button type="submit">Salvar</button>
+</form>
+
+<a href="/clientes">Voltar</a>
+
+</body>
+</html>
