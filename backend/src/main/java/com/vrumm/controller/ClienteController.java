@@ -8,13 +8,12 @@ import io.micronaut.http.MediaType;
 import io.micronaut.http.annotation.Body;
 import io.micronaut.http.annotation.Consumes;
 import io.micronaut.http.annotation.Controller;
+import io.micronaut.http.annotation.CookieValue;
 import io.micronaut.http.annotation.Get;
 import io.micronaut.http.annotation.PathVariable;
 import io.micronaut.http.annotation.Post;
 import io.micronaut.views.ModelAndView;
-import io.micronaut.views.View;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.validation.Valid;
 
 import java.net.URI;
@@ -22,38 +21,47 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-@Tag(name = "clientes")
+@Hidden
 @Controller("/clientes")
 public class ClienteController {
 
     private final ClienteService clienteService;
+    private final AuthController authController;
 
-    public ClienteController(ClienteService clienteService) {
+    public ClienteController(ClienteService clienteService, AuthController authController) {
         this.clienteService = clienteService;
+        this.authController = authController;
     }
 
-    @Operation(summary = "Lista os clientes")
     @Get
-    @View("clientes/list")
-    public Map<String, Object> listar() {
+    public HttpResponse<?> listar(@CookieValue(value = AuthController.AUTH_COOKIE) Optional<Long> clienteId) {
+        Optional<Cliente> autenticado = clienteId.flatMap(authController::getClienteAutenticado);
+        if (autenticado.isEmpty()) {
+            return HttpResponse.seeOther(URI.create("/"));
+        }
+
         Map<String, Object> model = new HashMap<>();
         model.put("title", "Clientes");
+        model.put("cliente", autenticado.get());
         model.put("clientes", clienteService.listarTodos());
-        return model;
+        return HttpResponse.ok(new ModelAndView<>("clientes/list", model));
     }
 
-    @Operation(summary = "Abre o formulário de novo cliente")
     @Get("/novo")
-    @View("clientes/form")
-    public Map<String, Object> novo() {
+    public HttpResponse<?> novo(@CookieValue(value = AuthController.AUTH_COOKIE) Optional<Long> clienteId) {
+        Optional<Cliente> autenticado = clienteId.flatMap(authController::getClienteAutenticado);
+        if (autenticado.isEmpty()) {
+            return HttpResponse.seeOther(URI.create("/"));
+        }
+
         Map<String, Object> model = new HashMap<>();
         model.put("title", "Novo Cliente");
-        model.put("cliente", new ClienteForm());
+        model.put("cliente", autenticado.get());
+        model.put("form", new ClienteForm());
         model.put("modoEdicao", false);
-        return model;
+        return HttpResponse.ok(new ModelAndView<>("clientes/form", model));
     }
 
-    @Operation(summary = "Salva um novo cliente")
     @Post
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public HttpResponse<?> salvar(@Body @Valid ClienteForm form) {
@@ -61,37 +69,32 @@ public class ClienteController {
         return HttpResponse.seeOther(URI.create("/clientes"));
     }
 
-    @Operation(summary = "Abre o formulário de edição de cliente")
     @Get("/{id}/editar")
-    @View("clientes/form")
-    public ModelAndView<Map<String, Object>> editar(@PathVariable Long id) {
-        Optional<Cliente> clienteOpt = clienteService.buscarPorId(id);
-
-        if (clienteOpt.isEmpty()) {
-            return new ModelAndView<>("clientes/form", Map.of(
-                    "title", "Cliente não encontrado",
-                    "cliente", new ClienteForm(),
-                    "modoEdicao", false,
-                    "erro", "Cliente não encontrado"
-            ));
+    public HttpResponse<?> editar(@CookieValue(value = AuthController.AUTH_COOKIE) Optional<Long> clienteId,
+                                  @PathVariable Long id) {
+        Optional<Cliente> autenticado = clienteId.flatMap(authController::getClienteAutenticado);
+        if (autenticado.isEmpty()) {
+            return HttpResponse.seeOther(URI.create("/"));
         }
 
-        Cliente cliente = clienteOpt.get();
-        ClienteForm form = new ClienteForm();
-        form.setNome(cliente.getNome());
-        form.setCpf(cliente.getCpf().getValor());
-        form.setRg(cliente.getRg());
-        form.setProfissao(cliente.getProfissao());
+        Optional<Cliente> clienteOpt = clienteService.buscarPorId(id);
+        if (clienteOpt.isEmpty()) {
+            return HttpResponse.seeOther(URI.create("/clientes"));
+        }
 
-        return new ModelAndView<>("clientes/form", Map.of(
-                "title", "Editar Cliente",
-                "cliente", form,
-                "modoEdicao", true,
-                "clienteId", cliente.getId()
-        ));
+        Cliente clienteEdicao = clienteOpt.get();
+        ClienteForm form = ClienteForm.fromCliente(clienteEdicao);
+        form.setSenha("");
+
+        Map<String, Object> model = new HashMap<>();
+        model.put("title", "Editar Cliente");
+        model.put("cliente", autenticado.get());
+        model.put("form", form);
+        model.put("modoEdicao", true);
+        model.put("clienteId", clienteEdicao.getId());
+        return HttpResponse.ok(new ModelAndView<>("clientes/form", model));
     }
 
-    @Operation(summary = "Atualiza um cliente existente")
     @Post("/{id}/editar")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public HttpResponse<?> atualizar(@PathVariable Long id, @Body @Valid ClienteForm form) {
@@ -99,7 +102,6 @@ public class ClienteController {
         return HttpResponse.seeOther(URI.create("/clientes"));
     }
 
-    @Operation(summary = "Remove um cliente")
     @Post("/{id}/remover")
     public HttpResponse<?> remover(@PathVariable Long id) {
         clienteService.remover(id);

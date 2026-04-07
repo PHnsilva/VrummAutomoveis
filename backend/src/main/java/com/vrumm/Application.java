@@ -7,11 +7,12 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 @OpenAPIDefinition(
         info = @Info(
-                title = "VRUMM - Cliente API",
+                title = "VRUMM Automóveis API",
                 version = "1.0.0",
-                description = "Operações do módulo de clientes"
+                description = "Fluxos de autenticação e CRUD de clientes da aplicação VRUMM"
         ),
         tags = {
+                @Tag(name = "auth", description = "Operações de autenticação"),
                 @Tag(name = "clientes", description = "Operações do CRUD de clientes")
         }
 )
