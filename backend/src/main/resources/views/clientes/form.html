@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/base :: layout(~{::title}, ~{::content})}">
+<head>
+    <title>Cliente</title>
+</head>
+<body>
+<div th:fragment="content" class="crud-wrapper">
+    <section class="card form-card">
+        <div class="card-header-row">
+            <div>
+                <span class="eyebrow">CRUD</span>
+                <h1 th:text="${modoEdicao} ? 'Editar cliente' : 'Novo cliente'">Cliente</h1>
+            </div>
+            <a class="button-secondary" th:href="@{/clientes}">Voltar</a>
+        </div>
+
+        <form class="cliente-form" th:action="${modoEdicao} ? @{/clientes/{id}/editar(id=${clienteId})} : @{/clientes}" method="post">
+            <div class="form-grid page-form-grid">
+                <div class="form-group">
+                    <label>Nome</label>
+                    <input type="text" name="nome" th:value="${form.nome}" required>
+                </div>
+                <div class="form-group">
+                    <label>E-mail</label>
+                    <input type="email" name="email" th:value="${form.email}" required>
+                </div>
+                <div class="form-group">
+                    <label>CPF</label>
+                    <input type="text" name="cpf" th:value="${form.cpf}" required>
+                </div>
+                <div class="form-group">
+                    <label>RG</label>
+                    <input type="text" name="rg" th:value="${form.rg}" required>
+                </div>
+                <div class="form-group form-group-full">
+                    <label>Profissão</label>
+                    <input type="text" name="profissao" th:value="${form.profissao}" required>
+                </div>
+                <div class="form-group form-group-full">
+                    <label th:text="${modoEdicao} ? 'Nova senha (opcional)' : 'Senha'">Senha</label>
+                    <input type="password" name="senha" th:required="${!modoEdicao}">
+                </div>
+            </div>
+            <button class="button-primary" type="submit" th:text="${modoEdicao} ? 'Salvar alterações' : 'Criar cliente'">Salvar</button>
+        </form>
+    </section>
+</div>
+</body>
+</html>

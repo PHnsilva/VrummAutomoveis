@@ -1,45 +1,46 @@
-function openModal() {
+function openModal(panel = null) {
     const overlay = document.getElementById('loginOverlay');
-    const modal = overlay.querySelector('.modal');
+    if (!overlay) return;
     overlay.classList.add('active');
-    modal.style.animation = 'popIn 0.2s ease forwards';
+    if (panel) {
+        switchPanel(panel, true);
+    }
 }
 
 function closeModal() {
     const overlay = document.getElementById('loginOverlay');
-    const modal = overlay.querySelector('.modal');
-    modal.style.animation = 'popOut 0.18s ease forwards';
-    setTimeout(() => {
-        overlay.classList.remove('active');
-        modal.style.animation = '';
-    }, 180);
+    if (!overlay) return;
+    overlay.classList.remove('active');
 }
 
 function handleOverlay(e) {
     if (e.target === document.getElementById('loginOverlay')) closeModal();
 }
 
-function switchPanel(panel) {
+function switchPanel(panel, immediate = false) {
     const panelLogin = document.getElementById('panel-login');
     const panelCadastro = document.getElementById('panel-cadastro');
+    if (!panelLogin || !panelCadastro) return;
 
     if (panel === 'cadastro') {
-        panelLogin.style.animation = 'slideOutLeft 0.18s ease forwards';
-        setTimeout(() => {
-            panelLogin.style.display = 'none';
-            panelLogin.style.animation = '';
-            panelCadastro.style.display = 'block';
-            panelCadastro.style.animation = 'slideInRight 0.18s ease forwards';
-            setTimeout(() => { panelCadastro.style.animation = ''; }, 180);
-        }, 180);
+        panelLogin.style.display = 'none';
+        panelCadastro.style.display = 'block';
     } else {
-        panelCadastro.style.animation = 'slideOutRight 0.18s ease forwards';
-        setTimeout(() => {
-            panelCadastro.style.display = 'none';
-            panelCadastro.style.animation = '';
-            panelLogin.style.display = 'block';
-            panelLogin.style.animation = 'slideInLeft 0.18s ease forwards';
-            setTimeout(() => { panelLogin.style.animation = ''; }, 180);
-        }, 180);
+        panelCadastro.style.display = 'none';
+        panelLogin.style.display = 'block';
+    }
+
+    if (!immediate) {
+        const overlay = document.getElementById('loginOverlay');
+        if (overlay && !overlay.classList.contains('active')) {
+            overlay.classList.add('active');
+        }
     }
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+    const openPanel = document.body.dataset.openPanel;
+    if (openPanel === 'cadastro' || openPanel === 'login') {
+        openModal(openPanel);
+    }
+});

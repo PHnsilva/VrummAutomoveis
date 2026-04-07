@@ -1,43 +1,38 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-
 <head>
     <meta charset="UTF-8">
-    <title>Landing Page</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VRUMM | Landing Page</title>
     <link rel="stylesheet" th:href="@{/css/pages/landing.css}">
     <link rel="stylesheet" th:href="@{/css/fragments/auth-modal.css}">
-
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
-
-<body>
-    
-    <!-- Navbar -->
+<body data-open-panel="login" th:attr="data-open-panel=${erroCadastro} ? 'cadastro' : 'login'">
     <div class="navbar">
-        <div class="logo">
-            <h1>Vrum</h1>
-        </div>
+        <div class="logo"><h1>Vrum</h1></div>
         <div class="buttons">
-            <a href="#" class="btn" onclick="openModal(); return false;">Access</a>
+            <a href="#" class="btn" onclick="openModal(); return false;">Acessar</a>
         </div>
     </div>
-    
-    <!-- Conteúdo -->
+
     <main class="content">
         <div class="left">
-            <h1>Amazing<br> Cars rental near you</h1>
-            <p>Don't stop yourself from the pleasure of driving the best confortable cars from around the world here and now</p>
+            <span class="eyebrow">Sua locadora digital</span>
+            <h1>Alugue carros com uma experiência simples e rápida.</h1>
+            <p>Cadastre-se, faça login e acompanhe sua jornada na plataforma VRUMM.</p>
+            <div class="cta-row">
+                <a href="#" class="btn" onclick="openModal(); return false;">Começar agora</a>
+                <a th:href="@{/swagger-ui/index.html}" class="btn ghost">Abrir Swagger</a>
+            </div>
+            <div class="alert error" th:if="${erroLogin}">Credenciais inválidas. Tente novamente.</div>
+            <div class="alert error" th:if="${erroCadastro}">Não foi possível concluir o cadastro. Verifique os dados informados.</div>
         </div>
         <div class="right">
             <img th:src="@{/images/landing-car.png}" alt="Carro de Luxo">
         </div>
     </main>
-    
-    
-    
-    <!-- Modal de login -->
+
     <div th:replace="~{fragments/auth-modal :: authModal}"></div>
     <script th:src="@{/js/fragments/auth-modal.js}"></script>
 </body>
-
 </html>

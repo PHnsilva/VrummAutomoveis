@@ -1,17 +1,30 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       th:replace="~{layout/base :: layout(~{::title}, ~{::content})}">
-
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <head>
     <title>Home</title>
 </head>
-
 <body>
+<div th:fragment="content" class="dashboard-grid">
+    <section class="card hero-card">
+        <span class="eyebrow">Área autenticada</span>
+        <h1>Olá, <span th:text="${cliente.nome}">Cliente</span>.</h1>
+        <p>Seu cadastro e login estão funcionando. A partir daqui o usuário já está autenticado e pode navegar pelo sistema.</p>
+        <div class="action-row">
+            <a class="button-primary" th:href="@{/clientes}">Gerenciar clientes</a>
+            <a class="button-secondary" th:href="@{/swagger-ui/index.html}">Abrir Swagger</a>
+        </div>
+    </section>
 
-<div th:fragment="content">
+    <section class="card info-card">
+        <h2>Dados do cliente autenticado</h2>
+        <dl class="info-list">
+            <div><dt>E-mail</dt><dd th:text="${cliente.email}">email</dd></div>
+            <div><dt>CPF</dt><dd th:text="${cliente.cpf.valor}">cpf</dd></div>
+            <div><dt>RG</dt><dd th:text="${cliente.rg}">rg</dd></div>
+            <div><dt>Profissão</dt><dd th:text="${cliente.profissao}">profissao</dd></div>
+        </dl>
+    </section>
 </div>
-
 </body>
 </html>

@@ -1,57 +1,64 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
-
 <th:block th:fragment="authModal">
-
   <div class="modal-overlay" id="loginOverlay" onclick="handleOverlay(event)">
-    <div class="modal">
+    <div class="modal modal-wide">
+      <button class="modal-close" type="button" onclick="closeModal()">✕</button>
 
-      <!-- LOGIN -->
       <div id="panel-login">
         <h2 class="modal-title">Login</h2>
+        <p class="modal-subtitle">Entre com seu e-mail e senha.</p>
         <form th:action="@{/login}" method="post">
           <div class="form-group">
             <label>E-mail</label>
-            <input type="email" name="email" placeholder="your@email.com" required>
+            <input type="email" name="email" placeholder="seu@email.com" required>
           </div>
           <div class="form-group">
-            <label>Password</label>
+            <label>Senha</label>
             <input type="password" name="senha" placeholder="••••••••" required>
           </div>
-          <button type="submit" class="submit-btn">Login</button>
+          <button type="submit" class="submit-btn">Entrar</button>
         </form>
-
-        <p class="modal-switch">Don't have an account? <a onclick="switchPanel('cadastro')">Register</a></p>
+        <p class="modal-switch">Ainda não tem conta? <a onclick="switchPanel('cadastro')">Cadastre-se</a></p>
       </div>
 
-      <!-- CADASTRO -->
       <div id="panel-cadastro" style="display:none;">
-        <h2 class="modal-title">Register</h2>
-
+        <h2 class="modal-title">Cadastro</h2>
+        <p class="modal-subtitle">Crie sua conta e acesse a área logada.</p>
         <form th:action="@{/cadastro}" method="post">
-          <div class="form-group">
-            <label>Full Name</label>
-            <input type="text" name="nome" placeholder="John Doe" required>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Nome completo</label>
+              <input type="text" name="nome" placeholder="Felipe Parreiras" required>
+            </div>
+            <div class="form-group">
+              <label>E-mail</label>
+              <input type="email" name="email" placeholder="seu@email.com" required>
+            </div>
+            <div class="form-group">
+              <label>CPF</label>
+              <input type="text" name="cpf" placeholder="12345678909" required>
+            </div>
+            <div class="form-group">
+              <label>RG</label>
+              <input type="text" name="rg" placeholder="MG-12.345.678" required>
+            </div>
+            <div class="form-group form-group-full">
+              <label>Profissão</label>
+              <input type="text" name="profissao" placeholder="Engenheiro de Software" required>
+            </div>
+            <div class="form-group form-group-full">
+              <label>Senha</label>
+              <input type="password" name="senha" placeholder="••••••••" required>
+            </div>
           </div>
-          <div class="form-group">
-            <label>E-mail</label>
-            <input type="email" name="email" placeholder="your@email.com" required>
-          </div>
-          <div class="form-group">
-            <label>Password</label>
-            <input type="password" name="senha" placeholder="••••••••" required>
-          </div>
-          <button type="submit" class="submit-btn">Create Account</button>
+          <button type="submit" class="submit-btn">Criar conta</button>
         </form>
-
-        <p class="modal-switch">Already have an account? <a onclick="switchPanel('login')">Login</a></p>
+        <p class="modal-switch">Já tem conta? <a onclick="switchPanel('login')">Fazer login</a></p>
       </div>
-
     </div>
   </div>
-
 </th:block>
-
 </body>
 </html>
