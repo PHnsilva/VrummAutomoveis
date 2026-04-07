@@ -15,4 +15,6 @@ public interface ClienteRepository extends CrudRepository<Cliente, Long> {
     List<Cliente> findAll();
 
     Optional<Cliente> findByCpf(Cpf cpf);
+
+    Optional<Cliente> findByEmail(String email);
 }
