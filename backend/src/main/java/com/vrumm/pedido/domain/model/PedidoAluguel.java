@@ -32,6 +32,23 @@ public class PedidoAluguel {
     public PedidoAluguel() {
     }
 
+    public static PedidoAluguel criarSolicitacao(Long clienteId,
+                                                 Long automovelId,
+                                                 String observacao,
+                                                 BigDecimal valorEntrada,
+                                                 Integer prazoMeses,
+                                                 BigDecimal rendaDeclarada) {
+        PedidoAluguel pedido = new PedidoAluguel();
+        pedido.setClienteId(clienteId);
+        pedido.setAutomovelId(automovelId);
+        pedido.iniciarFluxo();
+        pedido.setObservacao(observacao);
+        pedido.setValorEntrada(valorEntrada);
+        pedido.setPrazoMeses(prazoMeses);
+        pedido.setRendaDeclarada(rendaDeclarada);
+        return pedido;
+    }
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -106,5 +123,18 @@ public class PedidoAluguel {
 
     public boolean pertenceAoCliente(Long idCliente) {
         return clienteId != null && clienteId.equals(idCliente);
+    }
+
+    public void iniciarFluxo() {
+        setStatus(PedidoStatus.statusInicial());
+        setDataCriacao(LocalDateTime.now());
+    }
+
+    public void aprovar() {
+        setStatus(PedidoStatus.APROVADO);
+    }
+
+    public void reprovar() {
+        setStatus(PedidoStatus.REPROVADO);
     }
 }

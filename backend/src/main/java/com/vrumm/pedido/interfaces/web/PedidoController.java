@@ -4,7 +4,9 @@ import com.vrumm.auth.application.facade.AuthSessionFacade;
 import com.vrumm.automovel.domain.model.Automovel;
 import com.vrumm.cliente.domain.model.Cliente;
 import com.vrumm.pedido.application.dto.PedidoForm;
+import com.vrumm.pedido.application.dto.PedidoStatusDto;
 import com.vrumm.pedido.application.facade.PedidoFacade;
+import com.vrumm.pedido.domain.model.PedidoAluguel;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.MediaType;
 import io.micronaut.http.annotation.Body;
@@ -12,6 +14,7 @@ import io.micronaut.http.annotation.Consumes;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.CookieValue;
 import io.micronaut.http.annotation.Get;
+import io.micronaut.http.annotation.PathVariable;
 import io.micronaut.http.annotation.Post;
 import io.micronaut.http.annotation.QueryValue;
 import io.micronaut.views.ModelAndView;
@@ -36,15 +39,49 @@ public class PedidoController {
         this.authSessionFacade = authSessionFacade;
     }
 
-    @Get("/novo")
-    public HttpResponse<?> novo(@CookieValue(value = AuthSessionFacade.AUTH_COOKIE) Optional<Long> clienteId,
-                                @QueryValue Optional<String> sucesso) {
+    @Get
+    public HttpResponse<?> listar(@CookieValue(value = AuthSessionFacade.AUTH_COOKIE) Optional<Long> clienteId) {
         Optional<Cliente> autenticado = clienteId.flatMap(authSessionFacade::getClienteAutenticado);
         if (autenticado.isEmpty()) {
             return HttpResponse.seeOther(URI.create("/"));
         }
-        return renderFormulario(autenticado.get(), new PedidoForm(), null,
-                sucesso.isPresent() ? "Pedido de aluguel criado com sucesso." : null);
+
+        Map<String, Object> model = new HashMap<>();
+        model.put("title", "Meus Pedidos");
+        model.put("cliente", autenticado.get());
+        model.put("pedidos", pedidoFacade.listarPedidosDoCliente(autenticado.get().getId()));
+        return HttpResponse.ok(new ModelAndView<>("pedidos/list", model));
+    }
+
+    @Get("/novo")
+    public HttpResponse<?> novo(@CookieValue(value = AuthSessionFacade.AUTH_COOKIE) Optional<Long> clienteId) {
+        Optional<Cliente> autenticado = clienteId.flatMap(authSessionFacade::getClienteAutenticado);
+        if (autenticado.isEmpty()) {
+            return HttpResponse.seeOther(URI.create("/"));
+        }
+        return renderFormulario(autenticado.get(), new PedidoForm(), null);
+    }
+
+    @Get("/{id}")
+    public HttpResponse<?> detalhar(@CookieValue(value = AuthSessionFacade.AUTH_COOKIE) Optional<Long> clienteId,
+                                    @PathVariable Long id,
+                                    @QueryValue Optional<String> sucesso) {
+        Optional<Cliente> autenticado = clienteId.flatMap(authSessionFacade::getClienteAutenticado);
+        if (autenticado.isEmpty()) {
+            return HttpResponse.seeOther(URI.create("/"));
+        }
+
+        Optional<PedidoStatusDto> pedidoOpt = pedidoFacade.buscarResumoPedidoDoCliente(autenticado.get().getId(), id);
+        if (pedidoOpt.isEmpty()) {
+            return HttpResponse.seeOther(URI.create("/pedidos"));
+        }
+
+        Map<String, Object> model = new HashMap<>();
+        model.put("title", "Status do Pedido");
+        model.put("cliente", autenticado.get());
+        model.put("pedido", pedidoOpt.get());
+        model.put("sucesso", sucesso.isPresent() ? "Pedido de aluguel criado com sucesso." : null);
+        return HttpResponse.ok(new ModelAndView<>("pedidos/detail", model));
     }
 
     @Post
@@ -57,17 +94,16 @@ public class PedidoController {
         }
 
         try {
-            pedidoFacade.criarPedido(autenticado.get().getId(), form);
-            return HttpResponse.seeOther(URI.create("/pedidos/novo?sucesso=1"));
+            PedidoAluguel pedido = pedidoFacade.criarPedido(autenticado.get().getId(), form);
+            return HttpResponse.seeOther(URI.create("/pedidos/" + pedido.getId() + "?sucesso=1"));
         } catch (IllegalArgumentException e) {
-            return renderFormulario(autenticado.get(), form, e.getMessage(), null);
+            return renderFormulario(autenticado.get(), form, e.getMessage());
         }
     }
 
     private HttpResponse<ModelAndView<Map<String, Object>>> renderFormulario(Cliente cliente,
                                                                               PedidoForm form,
-                                                                              String erro,
-                                                                              String sucesso) {
+                                                                              String erro) {
         List<Automovel> automoveis = pedidoFacade.listarAutomoveisDisponiveis();
         Map<String, Object> model = new HashMap<>();
         model.put("title", "Novo Pedido");
@@ -75,7 +111,6 @@ public class PedidoController {
         model.put("form", form);
         model.put("automoveis", automoveis);
         model.put("erro", erro);
-        model.put("sucesso", sucesso);
         return HttpResponse.ok(new ModelAndView<>("pedidos/form", model));
     }
 }
