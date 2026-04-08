@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/base :: layout(~{::title}, ~{::content})}">
+<head>
+    <title>Status do Pedido</title>
+</head>
+<body>
+<div th:fragment="content" class="crud-wrapper">
+    <section class="card detail-card">
+        <div class="card-header-row">
+            <div>
+                <span class="eyebrow">Pedido <span th:text="${'#' + pedido.id}">#1</span></span>
+                <h1>Status do pedido</h1>
+                <p class="form-helper">Consulte o andamento atual da sua solicitação.</p>
+            </div>
+            <div class="header-actions">
+                <a class="button-secondary" th:href="@{/pedidos}">Meus pedidos</a>
+                <a class="button-primary" th:href="@{/pedidos/novo}">Novo pedido</a>
+            </div>
+        </div>
+
+        <div class="alert alert-success" th:if="${sucesso != null}" th:text="${sucesso}">Pedido criado.</div>
+
+        <div class="status-hero">
+            <span th:class="${pedido.statusBadgeClass}" th:text="${pedido.statusDescricao}">Em análise</span>
+            <p class="status-helper">Este é o status atual do seu pedido dentro do fluxo inicial do protótipo.</p>
+        </div>
+
+        <div class="detail-grid">
+            <div class="detail-item">
+                <span class="detail-label">Automóvel</span>
+                <strong th:text="${pedido.automovelDescricao}">Automóvel</strong>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">Criado em</span>
+                <strong th:text="${pedido.dataCriacaoFormatada}">00/00/0000 00:00</strong>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">Renda declarada</span>
+                <strong th:text="${pedido.rendaDeclaradaFormatada}">R$ 0,00</strong>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">Valor de entrada</span>
+                <strong th:text="${pedido.valorEntradaFormatado}">R$ 0,00</strong>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">Prazo desejado</span>
+                <strong th:text="${pedido.prazoMeses != null ? pedido.prazoMeses + ' meses' : 'Não informado'}">Não informado</strong>
+            </div>
+            <div class="detail-item detail-item-full">
+                <span class="detail-label">Observação</span>
+                <p th:text="${pedido.observacao != null ? pedido.observacao : 'Nenhuma observação informada.'}">Sem observação.</p>
+            </div>
+        </div>
+    </section>
+</div>
+</body>
+</html>
