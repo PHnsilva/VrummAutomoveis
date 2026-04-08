@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/base :: layout(~{::title}, ~{::content})}">
+<head>
+    <title>Novo Pedido</title>
+</head>
+<body>
+<div th:fragment="content" class="crud-wrapper">
+    <section class="card form-card">
+        <div class="card-header-row">
+            <div>
+                <span class="eyebrow">Pedidos</span>
+                <h1>Novo pedido de aluguel</h1>
+                <p class="form-helper">Solicitante: <strong th:text="${cliente.nome}">Cliente</strong></p>
+            </div>
+            <a class="button-secondary" th:href="@{/home}">Voltar</a>
+        </div>
+
+        <div class="alert alert-success" th:if="${sucesso != null}" th:text="${sucesso}">Pedido criado.</div>
+        <div class="alert alert-error" th:if="${erro != null}" th:text="${erro}">Erro ao criar pedido.</div>
+        <div class="alert alert-info" th:if="${#lists.isEmpty(automoveis)}">
+            Nenhum automóvel disponível no momento. Cadastre ou libere um automóvel antes de criar pedidos.
+        </div>
+
+        <form class="cliente-form" th:action="@{/pedidos}" method="post">
+            <div class="form-grid page-form-grid">
+                <div class="form-group form-group-full">
+                    <label>Automóvel</label>
+                    <select name="automovelId" required>
+                        <option value="">Selecione um automóvel</option>
+                        <option th:each="item : ${automoveis}"
+                                th:value="${item.id}"
+                                th:text="${item.descricaoExibicao}"
+                                th:selected="${form.automovelId != null and form.automovelId == item.id}">
+                            Automóvel
+                        </option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Renda declarada</label>
+                    <input type="number" name="rendaDeclarada" step="0.01" min="0" th:value="${form.rendaDeclarada}">
+                </div>
+                <div class="form-group">
+                    <label>Valor de entrada</label>
+                    <input type="number" name="valorEntrada" step="0.01" min="0" th:value="${form.valorEntrada}">
+                </div>
+                <div class="form-group form-group-full">
+                    <label>Prazo desejado em meses</label>
+                    <input type="number" name="prazoMeses" min="1" th:value="${form.prazoMeses}">
+                </div>
+                <div class="form-group form-group-full">
+                    <label>Observação</label>
+                    <textarea name="observacao" rows="4" maxlength="500" th:text="${form.observacao}"></textarea>
+                </div>
+            </div>
+            <button class="button-primary" type="submit" th:disabled="${#lists.isEmpty(automoveis)}">Enviar pedido</button>
+        </form>
+    </section>
+</div>
+</body>
+</html>

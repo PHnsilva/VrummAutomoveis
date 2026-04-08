@@ -11,7 +11,8 @@
         <h1>Olá, <span th:text="${cliente.nome}">Cliente</span>.</h1>
         <p>Seu cadastro e login estão funcionando. A partir daqui o usuário já está autenticado e pode navegar pelo sistema.</p>
         <div class="action-row">
-            <a class="button-primary" th:href="@{/clientes}">Gerenciar clientes</a>
+            <a class="button-primary" th:href="@{/pedidos/novo}">Novo pedido de aluguel</a>
+            <a class="button-secondary" th:href="@{/clientes}">Gerenciar clientes</a>
             <a class="button-secondary" th:href="@{/swagger-ui/index.html}">Abrir Swagger</a>
         </div>
     </section>
