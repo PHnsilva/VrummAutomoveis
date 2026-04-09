@@ -15,6 +15,10 @@
             <a class="button-primary" th:href="@{/clientes/novo}">Novo cliente</a>
         </div>
 
+
+        <div class="alert alert-success" th:if="${sucesso != null}" th:text="${sucesso}">Operação concluída com sucesso.</div>
+        <div class="alert alert-error" th:if="${erro != null}" th:text="${erro}">Não foi possível concluir a operação.</div>
+
         <div class="table-wrapper">
             <table>
                 <thead>

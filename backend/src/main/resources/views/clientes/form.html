@@ -15,6 +15,10 @@
             <a class="button-secondary" th:href="@{/clientes}">Voltar</a>
         </div>
 
+
+        <div class="alert alert-success" th:if="${sucesso != null}" th:text="${sucesso}">Operação concluída com sucesso.</div>
+        <div class="alert alert-error" th:if="${erro != null}" th:text="${erro}">Não foi possível salvar o cliente.</div>
+
         <form class="cliente-form" th:action="${modoEdicao} ? @{/clientes/{id}/editar(id=${clienteId})} : @{/clientes}" method="post">
             <div class="form-grid page-form-grid">
                 <div class="form-group">
