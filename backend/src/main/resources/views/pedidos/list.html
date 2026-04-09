@@ -10,16 +10,19 @@
         <div class="card-header-row">
             <div>
                 <span class="eyebrow">Pedidos</span>
-                <h1>Meus pedidos de aluguel</h1>
-                <p class="form-helper">Acompanhe o status atual dos pedidos vinculados à sua conta.</p>
+                <h1>Meus pedidos</h1>
+                <p class="form-helper">Acompanhe o status das suas solicitações de aluguel.</p>
             </div>
-            <a class="button-primary" th:href="@{/pedidos/novo}">Novo pedido</a>
+            <div class="header-actions">
+                <a class="button-secondary" th:href="@{/perfil}">Meu perfil</a>
+                <a class="button-primary" th:href="@{/pedidos/novo}">Novo pedido</a>
+            </div>
         </div>
 
-        <div class="empty-state" th:if="${#lists.isEmpty(pedidos)}">
-            <h2>Nenhum pedido cadastrado</h2>
-            <p>Quando você criar um pedido de aluguel, ele aparecerá aqui com o status atual.</p>
-            <a class="button-secondary" th:href="@{/pedidos/novo}">Criar primeiro pedido</a>
+        <div class="alert alert-success" th:if="${sucesso != null}" th:text="${sucesso}">Pedido criado.</div>
+
+        <div class="alert alert-info" th:if="${#lists.isEmpty(pedidos)}">
+            Você ainda não possui pedidos cadastrados. Crie um novo pedido para iniciar seu fluxo.
         </div>
 
         <div class="table-wrapper" th:if="${!#lists.isEmpty(pedidos)}">
@@ -28,8 +31,9 @@
                 <tr>
                     <th>Pedido</th>
                     <th>Automóvel</th>
-                    <th>Criado em</th>
                     <th>Status</th>
+                    <th>Criado em</th>
+                    <th>Valor pago</th>
                     <th>Ações</th>
                 </tr>
                 </thead>
@@ -37,10 +41,9 @@
                 <tr th:each="item : ${pedidos}">
                     <td th:text="${'#' + item.id}">#1</td>
                     <td th:text="${item.automovelDescricao}">Automóvel</td>
+                    <td><span th:class="${item.statusBadgeClass}" th:text="${item.statusDescricao}">Status</span></td>
                     <td th:text="${item.dataCriacaoFormatada}">00/00/0000 00:00</td>
-                    <td>
-                        <span th:class="${item.statusBadgeClass}" th:text="${item.statusDescricao}">Em análise</span>
-                    </td>
+                    <td th:text="${item.finalizado ? item.valorPagoFormatado : '—'}">—</td>
                     <td>
                         <a class="button-secondary small" th:href="@{/pedidos/{id}(id=${item.id})}">Consultar status</a>
                     </td>

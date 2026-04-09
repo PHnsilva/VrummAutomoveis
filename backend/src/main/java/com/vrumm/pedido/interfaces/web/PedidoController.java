@@ -3,10 +3,10 @@ package com.vrumm.pedido.interfaces.web;
 import com.vrumm.auth.application.facade.AuthSessionFacade;
 import com.vrumm.automovel.domain.model.Automovel;
 import com.vrumm.cliente.domain.model.Cliente;
+import com.vrumm.pedido.application.dto.PagamentoPedidoForm;
 import com.vrumm.pedido.application.dto.PedidoForm;
 import com.vrumm.pedido.application.dto.PedidoStatusDto;
 import com.vrumm.pedido.application.facade.PedidoFacade;
-import com.vrumm.pedido.domain.model.PedidoAluguel;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.MediaType;
 import io.micronaut.http.annotation.Body;
@@ -40,16 +40,26 @@ public class PedidoController {
     }
 
     @Get
-    public HttpResponse<?> listar(@CookieValue(value = AuthSessionFacade.AUTH_COOKIE) Optional<Long> clienteId) {
+    public HttpResponse<?> listar(@CookieValue(value = AuthSessionFacade.AUTH_COOKIE) Optional<Long> clienteId,
+                                  @QueryValue Optional<String> sucesso) {
         Optional<Cliente> autenticado = clienteId.flatMap(authSessionFacade::getClienteAutenticado);
         if (autenticado.isEmpty()) {
             return HttpResponse.seeOther(URI.create("/"));
+        }
+        if (autenticado.get().isAdmin()) {
+            String redirect = sucesso.filter("pedido-criado"::equals).isPresent()
+                    ? "/admin/pedidos?sucesso=pedido-criado"
+                    : "/admin/pedidos";
+            return HttpResponse.seeOther(URI.create(redirect));
         }
 
         Map<String, Object> model = new HashMap<>();
         model.put("title", "Meus Pedidos");
         model.put("cliente", autenticado.get());
         model.put("pedidos", pedidoFacade.listarPedidosDoCliente(autenticado.get().getId()));
+        model.put("sucesso", sucesso.filter("pedido-criado"::equals).isPresent()
+                ? "Pedido de aluguel criado com sucesso."
+                : null);
         return HttpResponse.ok(new ModelAndView<>("pedidos/list", model));
     }
 
@@ -65,22 +75,31 @@ public class PedidoController {
     @Get("/{id}")
     public HttpResponse<?> detalhar(@CookieValue(value = AuthSessionFacade.AUTH_COOKIE) Optional<Long> clienteId,
                                     @PathVariable Long id,
-                                    @QueryValue Optional<String> sucesso) {
+                                    @QueryValue Optional<String> sucesso,
+                                    @QueryValue Optional<String> erro) {
         Optional<Cliente> autenticado = clienteId.flatMap(authSessionFacade::getClienteAutenticado);
         if (autenticado.isEmpty()) {
             return HttpResponse.seeOther(URI.create("/"));
         }
 
-        Optional<PedidoStatusDto> pedidoOpt = pedidoFacade.buscarResumoPedidoDoCliente(autenticado.get().getId(), id);
+        Optional<PedidoStatusDto> pedidoOpt = autenticado.get().isAdmin()
+                ? pedidoFacade.buscarResumoPedido(id)
+                : pedidoFacade.buscarResumoPedidoDoCliente(autenticado.get().getId(), id);
         if (pedidoOpt.isEmpty()) {
-            return HttpResponse.seeOther(URI.create("/pedidos"));
+            return HttpResponse.seeOther(URI.create(autenticado.get().isAdmin() ? "/admin/pedidos" : "/pedidos"));
         }
 
         Map<String, Object> model = new HashMap<>();
         model.put("title", "Status do Pedido");
         model.put("cliente", autenticado.get());
         model.put("pedido", pedidoOpt.get());
-        model.put("sucesso", sucesso.isPresent() ? "Pedido de aluguel criado com sucesso." : null);
+        model.put("pagamentoForm", new PagamentoPedidoForm());
+        model.put("sucesso", sucesso.filter("pagamento"::equals).isPresent()
+                ? "Pagamento confirmado com sucesso."
+                : null);
+        model.put("erro", erro.filter("pagamento"::equals).isPresent()
+                ? "Não foi possível confirmar o pagamento deste pedido."
+                : null);
         return HttpResponse.ok(new ModelAndView<>("pedidos/detail", model));
     }
 
@@ -94,10 +113,35 @@ public class PedidoController {
         }
 
         try {
-            PedidoAluguel pedido = pedidoFacade.criarPedido(autenticado.get().getId(), form);
-            return HttpResponse.seeOther(URI.create("/pedidos/" + pedido.getId() + "?sucesso=1"));
+            pedidoFacade.criarPedido(autenticado.get().getId(), form);
+            String redirect = autenticado.get().isAdmin()
+                    ? "/admin/pedidos?sucesso=pedido-criado"
+                    : "/pedidos?sucesso=pedido-criado";
+            return HttpResponse.seeOther(URI.create(redirect));
         } catch (IllegalArgumentException e) {
             return renderFormulario(autenticado.get(), form, e.getMessage());
+        }
+    }
+
+    @Post("/{id}/confirmar-pagamento")
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    public HttpResponse<?> confirmarPagamento(@CookieValue(value = AuthSessionFacade.AUTH_COOKIE) Optional<Long> clienteId,
+                                              @PathVariable Long id,
+                                              @Body @Valid PagamentoPedidoForm form) {
+        Optional<Cliente> autenticado = clienteId.flatMap(authSessionFacade::getClienteAutenticado);
+        if (autenticado.isEmpty()) {
+            return HttpResponse.seeOther(URI.create("/"));
+        }
+
+        try {
+            if (autenticado.get().isAdmin()) {
+                pedidoFacade.confirmarPagamento(id, form.getValorPago());
+            } else {
+                pedidoFacade.confirmarPagamentoDoCliente(autenticado.get().getId(), id, form.getValorPago());
+            }
+            return HttpResponse.seeOther(URI.create("/pedidos/" + id + "?sucesso=pagamento"));
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            return HttpResponse.seeOther(URI.create("/pedidos/" + id + "?erro=pagamento"));
         }
     }
 

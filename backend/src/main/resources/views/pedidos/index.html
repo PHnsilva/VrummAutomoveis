@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/base :: layout(~{::title}, ~{::content})}">
+<head>
+    <title>Pedidos</title>
+</head>
+<body>
+<div th:fragment="content" class="crud-wrapper">
+    <section class="card hero-card">
+        <span class="eyebrow">Pedidos</span>
+        <h1>Central de pedidos</h1>
+        <p>Acompanhe aqui o fluxo das suas solicitações de aluguel. Nesta etapa, você já pode iniciar um novo pedido pelo sistema.</p>
+        <div class="action-row">
+            <a class="button-primary" th:href="@{/pedidos/novo}">Novo pedido</a>
+            <a class="button-secondary" th:href="@{/perfil}">Voltar ao perfil</a>
+        </div>
+    </section>
+
+    <section class="card info-card">
+        <h2>Seu acesso atual</h2>
+        <dl class="info-list">
+            <div><dt>Usuário</dt><dd th:text="${cliente.nome}">Cliente</dd></div>
+            <div><dt>Perfil</dt><dd th:text="${cliente.perfil.descricao}">Cliente</dd></div>
+            <div><dt>Próximo passo</dt><dd>Criar um pedido de aluguel para iniciar o fluxo.</dd></div>
+        </dl>
+    </section>
+</div>
+</body>
+</html>

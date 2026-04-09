@@ -13,7 +13,7 @@
                 <h1>Novo pedido de aluguel</h1>
                 <p class="form-helper">Solicitante: <strong th:text="${cliente.nome}">Cliente</strong></p>
             </div>
-            <a class="button-secondary" th:href="@{/home}">Voltar</a>
+            <a class="button-secondary" th:href="@{/perfil}">Voltar</a>
         </div>
 
         <div class="alert alert-success" th:if="${sucesso != null}" th:text="${sucesso}">Pedido criado.</div>
