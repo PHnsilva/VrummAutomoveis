@@ -1,9 +1,9 @@
 package com.vrumm.pedido.domain.model;
 
 public enum PedidoStatus {
-    EM_ANALISE("Em análise", "status-badge status-badge--warning"),
-    APROVADO("Aprovado", "status-badge status-badge--success"),
-    REPROVADO("Reprovado", "status-badge status-badge--danger");
+    AGUARDANDO_PAGAMENTO("Aguardando pagamento", "status-badge status-badge--info"),
+    FINALIZADO("Finalizado", "status-badge status-badge--success"),
+    RECUSADO("Recusado", "status-badge status-badge--danger");
 
     private final String descricao;
     private final String badgeClass;
@@ -22,6 +22,6 @@ public enum PedidoStatus {
     }
 
     public static PedidoStatus statusInicial() {
-        return EM_ANALISE;
+        return AGUARDANDO_PAGAMENTO;
     }
 }

@@ -28,6 +28,7 @@ public class PedidoAluguel {
     private BigDecimal valorEntrada;
     private Integer prazoMeses;
     private BigDecimal rendaDeclarada;
+    private BigDecimal valorPago;
 
     public PedidoAluguel() {
     }
@@ -121,6 +122,14 @@ public class PedidoAluguel {
         this.rendaDeclarada = rendaDeclarada;
     }
 
+    public BigDecimal getValorPago() { return valorPago; }
+    public void setValorPago(BigDecimal valorPago) {
+        if (valorPago != null && valorPago.signum() < 0) {
+            throw new IllegalArgumentException("Valor pago não pode ser negativo");
+        }
+        this.valorPago = valorPago;
+    }
+
     public boolean pertenceAoCliente(Long idCliente) {
         return clienteId != null && clienteId.equals(idCliente);
     }
@@ -130,11 +139,36 @@ public class PedidoAluguel {
         setDataCriacao(LocalDateTime.now());
     }
 
-    public void aprovar() {
-        setStatus(PedidoStatus.APROVADO);
+    public void recusar() {
+        if (status == PedidoStatus.FINALIZADO) {
+            throw new IllegalStateException("Pedido finalizado não pode ser recusado");
+        }
+        if (status == PedidoStatus.RECUSADO) {
+            throw new IllegalStateException("Pedido já foi recusado");
+        }
+        setStatus(PedidoStatus.RECUSADO);
     }
 
-    public void reprovar() {
-        setStatus(PedidoStatus.REPROVADO);
+    public void finalizar(BigDecimal valorPago) {
+        if (status != PedidoStatus.AGUARDANDO_PAGAMENTO) {
+            throw new IllegalStateException("Pedido não está aguardando pagamento");
+        }
+        if (valorPago == null || valorPago.signum() <= 0) {
+            throw new IllegalArgumentException("Informe um valor pago maior que zero");
+        }
+        setValorPago(valorPago);
+        setStatus(PedidoStatus.FINALIZADO);
+    }
+
+    public boolean podeIrParaPagamento() {
+        return false;
+    }
+
+    public boolean podeSerRecusado() {
+        return status == PedidoStatus.AGUARDANDO_PAGAMENTO;
+    }
+
+    public boolean podeConfirmarPagamento() {
+        return status == PedidoStatus.AGUARDANDO_PAGAMENTO;
     }
 }
