@@ -27,6 +27,7 @@ public final class ClienteMapper {
         response.setCpf(cliente.getCpf().getValor());
         response.setRg(cliente.getRg());
         response.setProfissao(cliente.getProfissao());
+        response.setPerfil(cliente.getPerfil().name());
         return response;
     }
 }

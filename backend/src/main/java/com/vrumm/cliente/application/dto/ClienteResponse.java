@@ -15,6 +15,7 @@ public class ClienteResponse {
     private String cpf;
     private String rg;
     private String profissao;
+    private String perfil;
 
     public static ClienteResponse fromCliente(Cliente cliente) {
         return ClienteMapper.toResponse(cliente);
@@ -32,4 +33,6 @@ public class ClienteResponse {
     public void setRg(String rg) { this.rg = rg; }
     public String getProfissao() { return profissao; }
     public void setProfissao(String profissao) { this.profissao = profissao; }
+    public String getPerfil() { return perfil; }
+    public void setPerfil(String perfil) { this.perfil = perfil; }
 }

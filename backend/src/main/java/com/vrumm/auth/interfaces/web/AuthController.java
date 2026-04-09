@@ -36,7 +36,7 @@ public class AuthController {
     public MutableHttpResponse<?> cadastrar(@Body @Valid ClienteForm form) {
         try {
             Cliente cliente = clienteFacade.salvar(form);
-            return HttpResponse.seeOther(URI.create("/home"))
+            return HttpResponse.seeOther(URI.create("/perfil"))
                     .cookie(authSessionFacade.buildAuthCookie(cliente.getId()));
         } catch (IllegalArgumentException e) {
             return HttpResponse.seeOther(URI.create("/?erro=cadastro"));
@@ -51,7 +51,7 @@ public class AuthController {
             return HttpResponse.seeOther(URI.create("/?erro=login"));
         }
 
-        return HttpResponse.seeOther(URI.create("/home"))
+        return HttpResponse.seeOther(URI.create("/perfil"))
                 .cookie(authSessionFacade.buildAuthCookie(clienteOpt.get().getId()));
     }
 

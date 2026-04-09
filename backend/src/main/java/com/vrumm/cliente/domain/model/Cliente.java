@@ -27,6 +27,10 @@ public class Cliente {
 
     private String rg;
     private String profissao;
+
+    @TypeDef(type = DataType.STRING)
+    private PerfilAcesso perfil = PerfilAcesso.CLIENTE;
+
     private String senhaHash;
 
     @Transient
@@ -35,13 +39,14 @@ public class Cliente {
     public Cliente() {
     }
 
-    public Cliente(Long id, String nome, String email, Cpf cpf, String rg, String profissao, String senhaHash) {
+    public Cliente(Long id, String nome, String email, Cpf cpf, String rg, String profissao, PerfilAcesso perfil, String senhaHash) {
         this.id = id;
         setNome(nome);
         setEmail(email);
         setCpf(cpf);
         setRg(rg);
         setProfissao(profissao);
+        setPerfil(perfil);
         setSenhaHash(senhaHash);
     }
 
@@ -103,6 +108,16 @@ public class Cliente {
         }
         this.profissao = profissaoTratada;
     }
+
+
+    public PerfilAcesso getPerfil() { return perfil; }
+    public void setPerfil(PerfilAcesso perfil) { this.perfil = perfil == null ? PerfilAcesso.CLIENTE : perfil; }
+
+    @Transient
+    public boolean isAdmin() { return perfil == PerfilAcesso.ADMIN; }
+
+    @Transient
+    public boolean isCliente() { return perfil == PerfilAcesso.CLIENTE; }
 
     public String getSenhaHash() { return senhaHash; }
     public void setSenhaHash(String senhaHash) {
