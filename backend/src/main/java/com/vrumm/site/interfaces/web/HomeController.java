@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @Hidden
-@Controller("/home")
+@Controller
 public class HomeController {
 
     private final AuthSessionFacade authSessionFacade;
@@ -24,8 +24,8 @@ public class HomeController {
         this.authSessionFacade = authSessionFacade;
     }
 
-    @Get
-    public HttpResponse<?> home(@CookieValue(value = AuthSessionFacade.AUTH_COOKIE) Optional<Long> clienteId) {
+    @Get("/perfil")
+    public HttpResponse<?> perfil(@CookieValue(value = AuthSessionFacade.AUTH_COOKIE) Optional<Long> clienteId) {
         Optional<Cliente> clienteOpt = clienteId.flatMap(authSessionFacade::getClienteAutenticado);
         if (clienteOpt.isEmpty()) {
             return HttpResponse.seeOther(URI.create("/"));
@@ -34,5 +34,10 @@ public class HomeController {
         Map<String, Object> model = new HashMap<>();
         model.put("cliente", clienteOpt.get());
         return HttpResponse.ok(new ModelAndView<>("pages/home", model));
+    }
+
+    @Get("/home")
+    public HttpResponse<?> redirecionarHomeLegada() {
+        return HttpResponse.seeOther(URI.create("/perfil"));
     }
 }

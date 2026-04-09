@@ -4,35 +4,39 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VRUMM | Landing Page</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
     <link rel="stylesheet" th:href="@{/css/pages/landing.css}">
     <link rel="stylesheet" th:href="@{/css/fragments/auth-modal.css}">
 </head>
-<body data-open-panel="login" th:attr="data-open-panel=${erroCadastro} ? 'cadastro' : 'login'">
-    <div class="navbar">
-        <div class="logo"><h1>Vrum</h1></div>
-        <div class="buttons">
-            <a href="#" class="btn" onclick="openModal(); return false;">Acessar</a>
-        </div>
-    </div>
+<body class="landing-page" data-open-panel="login" th:attr="data-open-panel=${erroCadastro} ? 'cadastro' : 'login'">
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
 
     <main class="content">
         <div class="left">
-            <span class="eyebrow">Sua locadora digital</span>
-            <h1>Alugue carros com uma experiência simples e rápida.</h1>
-            <p>Cadastre-se, faça login e acompanhe sua jornada na plataforma VRUMM.</p>
-            <div class="cta-row">
+            <span class="eyebrow" th:text="${cliente != null} ? 'Bem-vindo de volta' : 'Sua locadora digital'">Sua locadora digital</span>
+            <h1 th:text="${cliente != null} ? 'Acompanhe seus pedidos e avance com a sua locação.' : 'Alugue carros com uma experiência simples e rápida.'">Alugue carros com uma experiência simples e rápida.</h1>
+            <p th:text="${cliente != null} ? 'A landing agora usa a mesma navegação do sistema. A partir daqui você acessa seu perfil, acompanha seus pedidos e inicia novas solicitações.' : 'Cadastre-se, faça login e acompanhe sua jornada na plataforma VRUMM.'">Cadastre-se, faça login e acompanhe sua jornada na plataforma VRUMM.</p>
+            <div class="cta-row" th:if="${cliente == null}">
                 <a href="#" class="btn" onclick="openModal(); return false;">Começar agora</a>
                 <a th:href="@{/swagger-ui/index.html}" class="btn ghost">Abrir Swagger</a>
             </div>
+            <div class="cta-row" th:if="${cliente != null}">
+                <a th:href="@{/pedidos}" class="btn">Ver meus pedidos</a>
+                <a th:href="@{/pedidos/novo}" class="btn ghost">Novo pedido</a>
+            </div>
             <div class="alert error" th:if="${erroLogin}">Credenciais inválidas. Tente novamente.</div>
             <div class="alert error" th:if="${erroCadastro}">Não foi possível concluir o cadastro. Verifique os dados informados.</div>
+            <div class="alert success" th:if="${cliente != null}">
+                Você está autenticado como <strong th:text="${cliente.nome}">Cliente</strong>
+                <span th:text="${'(' + cliente.perfil.descricao + ')'}">(Cliente)</span>.
+            </div>
         </div>
         <div class="right">
             <img th:src="@{/images/landing-car.png}" alt="Carro de Luxo">
         </div>
     </main>
 
-    <div th:replace="~{fragments/auth-modal :: authModal}"></div>
-    <script th:src="@{/js/fragments/auth-modal.js}"></script>
+    <div th:if="${cliente == null}" th:replace="~{fragments/auth-modal :: authModal}"></div>
+    <script th:if="${cliente == null}" th:src="@{/js/fragments/auth-modal.js}"></script>
 </body>
 </html>

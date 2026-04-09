@@ -2,14 +2,19 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
 <div th:fragment="navbar" class="navbar">
-    <div class="nav-brand"><a th:href="@{/home}">VRUMM</a></div>
+    <div class="nav-brand"><a th:href="@{/}">VRUMM</a></div>
     <div class="nav-links">
-        <a th:href="@{/home}">Home</a>
-        <a th:href="@{/clientes}">Clientes</a>
-        <a th:href="@{/pedidos/novo}">Novo pedido</a>
+        <a th:href="@{/}">Início</a>
+        <a th:if="${cliente != null and !cliente.admin}" th:href="@{/pedidos}">Meus pedidos</a>
+        <a th:if="${cliente != null and cliente.admin}" th:href="@{/admin/pedidos}">Painel pedidos</a>
+        <a th:if="${cliente != null and cliente.admin}" th:href="@{/clientes}">Gerenciar usuários</a>
         <a th:href="@{/swagger-ui/index.html}">Swagger</a>
-        <span class="nav-user" th:if="${cliente != null}" th:text="${cliente.nome}">Cliente</span>
+        <a class="nav-user" th:if="${cliente != null}" th:href="@{/perfil}">
+            <span th:text="${cliente.nome}">Cliente</span>
+            <small class="nav-user-role" th:text="${cliente.perfil.descricao}">Cliente</small>
+        </a>
         <a class="nav-logout" th:if="${cliente != null}" th:href="@{/logout}">Sair</a>
+        <a class="nav-logout" th:if="${cliente == null and authModalEnabled}" href="#" onclick="openModal(); return false;">Acessar</a>
     </div>
 </div>
 </body>

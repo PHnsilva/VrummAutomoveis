@@ -1,0 +1,6 @@
+ALTER TABLE cliente
+    ADD COLUMN IF NOT EXISTS perfil VARCHAR(20) NOT NULL DEFAULT 'CLIENTE';
+
+UPDATE cliente
+SET perfil = 'CLIENTE'
+WHERE perfil IS NULL OR perfil = '';

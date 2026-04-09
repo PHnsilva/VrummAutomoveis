@@ -2,24 +2,25 @@
 <html xmlns:th="http://www.thymeleaf.org"
       th:replace="~{layout/base :: layout(~{::title}, ~{::content})}">
 <head>
-    <title>Home</title>
+    <title>Meu Perfil</title>
 </head>
 <body>
 <div th:fragment="content" class="dashboard-grid">
     <section class="card hero-card">
         <span class="eyebrow">Área autenticada</span>
         <h1>Olá, <span th:text="${cliente.nome}">Cliente</span>.</h1>
-        <p>Seu cadastro e login estão funcionando. A partir daqui o usuário já está autenticado e pode navegar pelo sistema.</p>
+        <p>Este é o seu espaço pessoal na plataforma VRUMM. Aqui você acompanha seu cadastro, seus pedidos e os próximos passos do fluxo.</p>
         <div class="action-row">
-            <a class="button-primary" th:href="@{/pedidos/novo}">Novo pedido de aluguel</a>
-            <a class="button-secondary" th:href="@{/clientes}">Gerenciar clientes</a>
+            <a class="button-primary" th:if="${cliente.admin}" th:href="@{/admin/pedidos}">Painel de pedidos</a>
+            <a class="button-primary" th:if="${!cliente.admin}" th:href="@{/pedidos}">Meus pedidos</a>
             <a class="button-secondary" th:href="@{/swagger-ui/index.html}">Abrir Swagger</a>
         </div>
     </section>
 
     <section class="card info-card">
-        <h2>Dados do cliente autenticado</h2>
+        <h2>Dados do usuário</h2>
         <dl class="info-list">
+            <div><dt>Perfil</dt><dd th:text="${cliente.perfil.descricao}">Cliente</dd></div>
             <div><dt>E-mail</dt><dd th:text="${cliente.email}">email</dd></div>
             <div><dt>CPF</dt><dd th:text="${cliente.cpf.valor}">cpf</dd></div>
             <div><dt>RG</dt><dd th:text="${cliente.rg}">rg</dd></div>
