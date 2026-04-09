@@ -5,6 +5,9 @@ import com.vrumm.cliente.domain.model.Cliente;
 import com.vrumm.cliente.domain.model.ClienteVinculoAtivoChecker;
 import com.vrumm.cliente.domain.model.Cpf;
 import com.vrumm.cliente.infrastructure.persistence.ClienteRepository;
+import com.vrumm.shared.exception.DuplicateResourceException;
+import com.vrumm.shared.exception.OperationNotAllowedException;
+import com.vrumm.shared.exception.ResourceNotFoundException;
 import com.vrumm.shared.security.PasswordHasher;
 import jakarta.inject.Singleton;
 
@@ -56,7 +59,7 @@ public class ClienteFacade {
 
     public Cliente atualizar(Long id, ClienteForm form) {
         Cliente cliente = clienteRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Cliente não encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Cliente não encontrado"));
 
         Cpf cpf = new Cpf(form.getCpf());
         String email = normalizarEmail(form.getEmail());
@@ -96,11 +99,11 @@ public class ClienteFacade {
 
     public void remover(Long id) {
         Cliente cliente = clienteRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Cliente não encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Cliente não encontrado"));
 
         boolean possuiVinculosAtivos = clienteVinculoAtivoChecker.possuiVinculosAtivos(id);
         if (!cliente.podeSerRemovido(possuiVinculosAtivos)) {
-            throw new IllegalStateException("Cliente não pode ser removido pois possui vínculos ativos");
+            throw new OperationNotAllowedException("Cliente não pode ser removido pois possui vínculos ativos");
         }
 
         clienteRepository.deleteById(cliente.getId());
@@ -111,7 +114,7 @@ public class ClienteFacade {
         if (existente.isPresent()) {
             boolean mesmoRegistro = idAtual != null && existente.get().getId().equals(idAtual);
             if (!mesmoRegistro) {
-                throw new IllegalArgumentException("Já existe cliente com este CPF");
+                throw new DuplicateResourceException("Já existe cliente com este CPF");
             }
         }
     }
@@ -121,7 +124,7 @@ public class ClienteFacade {
         if (existente.isPresent()) {
             boolean mesmoRegistro = idAtual != null && existente.get().getId().equals(idAtual);
             if (!mesmoRegistro) {
-                throw new IllegalArgumentException("Já existe cliente com este e-mail");
+                throw new DuplicateResourceException("Já existe cliente com este e-mail");
             }
         }
     }
