@@ -1,6 +1,7 @@
 package com.vrumm.cliente.application.facade;
 
 import com.vrumm.cliente.application.dto.ClienteForm;
+import com.vrumm.cliente.application.dto.PerfilForm;
 import com.vrumm.cliente.domain.model.Cliente;
 import com.vrumm.cliente.domain.model.ClienteVinculoAtivoChecker;
 import com.vrumm.cliente.domain.model.Cpf;
@@ -51,6 +52,25 @@ public class ClienteFacade {
         validarCpfDuplicado(cpf, id); validarEmailDuplicado(email, id);
         cliente.setNome(form.getNome()); cliente.setEmail(email); cliente.setCpf(cpf); cliente.setRg(form.getRg()); cliente.setProfissao(form.getProfissao());
         if (form.getSenha() != null && !form.getSenha().isBlank()) cliente.setSenhaHash(passwordHasher.hash(form.getSenha()));
+        return clienteRepository.update(cliente);
+    }
+
+
+    public Cliente atualizarPerfil(Long id, PerfilForm form) {
+        Cliente cliente = clienteRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado"));
+        Cpf cpf = new Cpf(form.getCpf());
+        String email = normalizarEmail(form.getEmail());
+        validarCpfDuplicado(cpf, id);
+        validarEmailDuplicado(email, id);
+        cliente.setNome(form.getNome());
+        cliente.setEmail(email);
+        cliente.setCpf(cpf);
+        cliente.setRg(form.getRg());
+        cliente.setProfissao(form.getProfissao());
+        if (form.getSenha() != null && !form.getSenha().isBlank()) {
+            cliente.setSenhaHash(passwordHasher.hash(form.getSenha()));
+        }
         return clienteRepository.update(cliente);
     }
 
