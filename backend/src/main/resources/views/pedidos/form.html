@@ -45,7 +45,7 @@
                     <textarea name="observacao" rows="4" maxlength="500" th:text="${form.observacao}"></textarea>
                 </div>
             </div>
-            <button class="button-primary" type="submit" th:disabled="${#lists.isEmpty(automoveis)}" th:text="${edicao} ? 'Salvar alterações' : 'Enviar pedido'}">Enviar pedido</button>
+            <button class="button-primary" type="submit" th:disabled="${#lists.isEmpty(automoveis)}" th:text="${edicao} ? 'Salvar alterações' : 'Enviar pedido'">Enviar pedido</button>
         </form>
     </section>
 </div>

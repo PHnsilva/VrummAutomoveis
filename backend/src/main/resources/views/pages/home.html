@@ -15,6 +15,7 @@
             <a class="button-primary" th:if="${cliente.empresa}" th:href="@{/empresa/pedidos}">Painel da empresa</a>
             <a class="button-primary" th:if="${cliente.banco}" th:href="@{/banco/pedidos}">Painel do banco</a>
             <a class="button-secondary" th:if="${cliente.empresa}" th:href="@{/clientes}">Gerenciar usuários</a>
+            <a class="button-secondary" th:href="@{/perfil/editar}">Editar meu perfil</a>
             <a class="button-secondary" th:href="@{/swagger-ui/index.html}">Abrir Swagger</a>
         </div>
     </section>
