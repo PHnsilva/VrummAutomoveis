@@ -1,14 +1,12 @@
-package com.vrumm.cliente.domain.model;
+package com.vrumm.agente.domain.model;
 
-public enum PerfilAcesso {
-
-    CLIENTE("Cliente"),
+public enum AgenteTipo {
     EMPRESA("Empresa"),
     BANCO("Banco");
 
     private final String descricao;
 
-    PerfilAcesso(String descricao) {
+    AgenteTipo(String descricao) {
         this.descricao = descricao;
     }
 
