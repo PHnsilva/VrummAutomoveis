@@ -5,6 +5,9 @@ import com.vrumm.cliente.domain.model.Cliente;
 import io.micronaut.core.annotation.Introspected;
 import io.micronaut.serde.annotation.Serdeable;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Introspected
 @Serdeable
 public class ClienteResponse {
@@ -16,6 +19,8 @@ public class ClienteResponse {
     private String rg;
     private String profissao;
     private String perfil;
+    private String endereco;
+    private List<String> rendimentos = new ArrayList<>();
 
     public static ClienteResponse fromCliente(Cliente cliente) {
         return ClienteMapper.toResponse(cliente);
@@ -35,4 +40,8 @@ public class ClienteResponse {
     public void setProfissao(String profissao) { this.profissao = profissao; }
     public String getPerfil() { return perfil; }
     public void setPerfil(String perfil) { this.perfil = perfil; }
+    public String getEndereco() { return endereco; }
+    public void setEndereco(String endereco) { this.endereco = endereco; }
+    public List<String> getRendimentos() { return rendimentos; }
+    public void setRendimentos(List<String> rendimentos) { this.rendimentos = rendimentos; }
 }

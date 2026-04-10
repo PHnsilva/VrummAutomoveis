@@ -9,6 +9,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
+import java.math.BigDecimal;
+
 @Introspected
 @Serdeable
 public class ClienteForm {
@@ -34,6 +36,45 @@ public class ClienteForm {
     @Size(max = 100)
     private String profissao;
 
+    @NotBlank
+    @Pattern(regexp = "\\d{5}-?\\d{3}", message = "CEP inválido")
+    private String enderecoCep;
+
+    @NotBlank
+    @Size(max = 150)
+    private String enderecoLogradouro;
+
+    @NotBlank
+    @Size(max = 20)
+    private String enderecoNumero;
+
+    @Size(max = 80)
+    private String enderecoComplemento;
+
+    @NotBlank
+    @Size(max = 80)
+    private String enderecoBairro;
+
+    @NotBlank
+    @Size(max = 80)
+    private String enderecoCidade;
+
+    @NotBlank
+    @Pattern(regexp = "[A-Za-z]{2}", message = "UF inválida")
+    private String enderecoUf;
+
+    @Size(max = 120)
+    private String entidadeEmpregadora1;
+    private BigDecimal valorRendimento1;
+
+    @Size(max = 120)
+    private String entidadeEmpregadora2;
+    private BigDecimal valorRendimento2;
+
+    @Size(max = 120)
+    private String entidadeEmpregadora3;
+    private BigDecimal valorRendimento3;
+
     private String senha;
 
     public static ClienteForm fromCliente(Cliente cliente) {
@@ -50,6 +91,32 @@ public class ClienteForm {
     public void setRg(String rg) { this.rg = rg; }
     public String getProfissao() { return profissao; }
     public void setProfissao(String profissao) { this.profissao = profissao; }
+    public String getEnderecoCep() { return enderecoCep; }
+    public void setEnderecoCep(String enderecoCep) { this.enderecoCep = enderecoCep; }
+    public String getEnderecoLogradouro() { return enderecoLogradouro; }
+    public void setEnderecoLogradouro(String enderecoLogradouro) { this.enderecoLogradouro = enderecoLogradouro; }
+    public String getEnderecoNumero() { return enderecoNumero; }
+    public void setEnderecoNumero(String enderecoNumero) { this.enderecoNumero = enderecoNumero; }
+    public String getEnderecoComplemento() { return enderecoComplemento; }
+    public void setEnderecoComplemento(String enderecoComplemento) { this.enderecoComplemento = enderecoComplemento; }
+    public String getEnderecoBairro() { return enderecoBairro; }
+    public void setEnderecoBairro(String enderecoBairro) { this.enderecoBairro = enderecoBairro; }
+    public String getEnderecoCidade() { return enderecoCidade; }
+    public void setEnderecoCidade(String enderecoCidade) { this.enderecoCidade = enderecoCidade; }
+    public String getEnderecoUf() { return enderecoUf; }
+    public void setEnderecoUf(String enderecoUf) { this.enderecoUf = enderecoUf; }
+    public String getEntidadeEmpregadora1() { return entidadeEmpregadora1; }
+    public void setEntidadeEmpregadora1(String entidadeEmpregadora1) { this.entidadeEmpregadora1 = entidadeEmpregadora1; }
+    public BigDecimal getValorRendimento1() { return valorRendimento1; }
+    public void setValorRendimento1(BigDecimal valorRendimento1) { this.valorRendimento1 = valorRendimento1; }
+    public String getEntidadeEmpregadora2() { return entidadeEmpregadora2; }
+    public void setEntidadeEmpregadora2(String entidadeEmpregadora2) { this.entidadeEmpregadora2 = entidadeEmpregadora2; }
+    public BigDecimal getValorRendimento2() { return valorRendimento2; }
+    public void setValorRendimento2(BigDecimal valorRendimento2) { this.valorRendimento2 = valorRendimento2; }
+    public String getEntidadeEmpregadora3() { return entidadeEmpregadora3; }
+    public void setEntidadeEmpregadora3(String entidadeEmpregadora3) { this.entidadeEmpregadora3 = entidadeEmpregadora3; }
+    public BigDecimal getValorRendimento3() { return valorRendimento3; }
+    public void setValorRendimento3(BigDecimal valorRendimento3) { this.valorRendimento3 = valorRendimento3; }
     public String getSenha() { return senha; }
     public void setSenha(String senha) { this.senha = senha; }
 }

@@ -15,7 +15,6 @@
             <a class="button-primary" th:href="@{/clientes/novo}">Novo cliente</a>
         </div>
 
-
         <div class="alert alert-success" th:if="${sucesso != null}" th:text="${sucesso}">Operação concluída com sucesso.</div>
         <div class="alert alert-error" th:if="${erro != null}" th:text="${erro}">Não foi possível concluir a operação.</div>
 
@@ -25,21 +24,32 @@
                 <tr>
                     <th>ID</th>
                     <th>Nome</th>
-                    <th>E-mail</th>
-                    <th>CPF</th>
-                    <th>RG</th>
-                    <th>Profissão</th>
+                    <th>Contato</th>
+                    <th>Documento</th>
+                    <th>Endereço</th>
+                    <th>Rendimentos</th>
                     <th>Ações</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr th:each="item : ${clientes}">
                     <td th:text="${item.id}">1</td>
-                    <td th:text="${item.nome}">Nome</td>
-                    <td th:text="${item.email}">email</td>
-                    <td th:text="${item.cpf.valor}">cpf</td>
-                    <td th:text="${item.rg}">rg</td>
-                    <td th:text="${item.profissao}">profissao</td>
+                    <td>
+                        <strong th:text="${item.nome}">Nome</strong>
+                        <div class="table-muted" th:text="${item.profissao}">Profissão</div>
+                    </td>
+                    <td>
+                        <div th:text="${item.email}">email</div>
+                    </td>
+                    <td>
+                        <div><strong>CPF:</strong> <span th:text="${item.cpf.valor}">cpf</span></div>
+                        <div class="table-muted"><strong>RG:</strong> <span th:text="${item.rg}">rg</span></div>
+                    </td>
+                    <td th:text="${item.enderecoFormatado}">Endereço</td>
+                    <td>
+                        <div class="table-muted" th:if="${#lists.isEmpty(item.rendimentos)}">Nenhum</div>
+                        <div th:if="${!#lists.isEmpty(item.rendimentos)}" th:text="${#lists.size(item.rendimentos) + ' informado(s)'}">1 informado</div>
+                    </td>
                     <td>
                         <div class="action-row inline-actions">
                             <a class="button-secondary small" th:href="@{/clientes/{id}/editar(id=${item.id})}">Editar</a>

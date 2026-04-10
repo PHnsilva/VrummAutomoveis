@@ -5,9 +5,7 @@ import com.vrumm.cliente.application.dto.ClienteResponse;
 import com.vrumm.cliente.domain.model.Cliente;
 
 public final class ClienteMapper {
-
-    private ClienteMapper() {
-    }
+    private ClienteMapper() {}
 
     public static ClienteForm toForm(Cliente cliente) {
         ClienteForm form = new ClienteForm();

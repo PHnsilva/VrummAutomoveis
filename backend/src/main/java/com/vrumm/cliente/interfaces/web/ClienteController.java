@@ -31,7 +31,6 @@ import java.util.Optional;
 @Hidden
 @Controller("/clientes")
 public class ClienteController {
-
     private final ClienteFacade clienteFacade;
     private final AuthSessionFacade authSessionFacade;
 
@@ -44,10 +43,8 @@ public class ClienteController {
     public HttpResponse<?> listar(@CookieValue(value = AuthSessionFacade.AUTH_COOKIE) Optional<Long> clienteId,
                                   @QueryValue Optional<String> erro,
                                   @QueryValue Optional<String> sucesso) {
-        Optional<Cliente> autenticado = clienteId.flatMap(authSessionFacade::getClienteAutenticado);
-        if (autenticado.isEmpty()) {
-            return HttpResponse.seeOther(URI.create("/"));
-        }
+        Optional<Cliente> autenticado = getEmpresa(clienteId);
+        if (autenticado.isEmpty()) return HttpResponse.seeOther(URI.create("/perfil"));
         return renderList(autenticado.get(), erro.orElse(null), sucesso.orElse(null));
     }
 
@@ -55,10 +52,8 @@ public class ClienteController {
     public HttpResponse<?> novo(@CookieValue(value = AuthSessionFacade.AUTH_COOKIE) Optional<Long> clienteId,
                                 @QueryValue Optional<String> erro,
                                 @QueryValue Optional<String> sucesso) {
-        Optional<Cliente> autenticado = clienteId.flatMap(authSessionFacade::getClienteAutenticado);
-        if (autenticado.isEmpty()) {
-            return HttpResponse.seeOther(URI.create("/"));
-        }
+        Optional<Cliente> autenticado = getEmpresa(clienteId);
+        if (autenticado.isEmpty()) return HttpResponse.seeOther(URI.create("/perfil"));
         return renderForm(autenticado.get(), new ClienteForm(), false, null, erro.orElse(null), sucesso.orElse(null));
     }
 
@@ -66,15 +61,13 @@ public class ClienteController {
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public HttpResponse<?> salvar(@CookieValue(value = AuthSessionFacade.AUTH_COOKIE) Optional<Long> clienteId,
                                   @Body @Valid ClienteForm form) {
-        Optional<Cliente> autenticado = clienteId.flatMap(authSessionFacade::getClienteAutenticado);
-        if (autenticado.isEmpty()) {
-            return HttpResponse.seeOther(URI.create("/"));
-        }
+        Optional<Cliente> autenticado = getEmpresa(clienteId);
+        if (autenticado.isEmpty()) return HttpResponse.seeOther(URI.create("/perfil"));
         try {
             clienteFacade.salvar(form);
-            return redirectComMensagem("/clientes", "Cliente cadastrado com sucesso", false);
-        } catch (DuplicateResourceException | IllegalArgumentException | IllegalStateException exception) {
-            return renderForm(autenticado.get(), form, false, null, exception.getMessage(), null);
+            return HttpResponse.seeOther(URI.create("/clientes?sucesso=Cliente cadastrado com sucesso"));
+        } catch (DuplicateResourceException | IllegalArgumentException e) {
+            return renderForm(autenticado.get(), form, false, null, e.getMessage(), null);
         }
     }
 
@@ -83,38 +76,27 @@ public class ClienteController {
                                   @PathVariable Long id,
                                   @QueryValue Optional<String> erro,
                                   @QueryValue Optional<String> sucesso) {
-        Optional<Cliente> autenticado = clienteId.flatMap(authSessionFacade::getClienteAutenticado);
-        if (autenticado.isEmpty()) {
-            return HttpResponse.seeOther(URI.create("/"));
-        }
-
-        Optional<Cliente> clienteOpt = clienteFacade.buscarPorId(id);
-        if (clienteOpt.isEmpty()) {
-            return redirectComMensagem("/clientes", "Cliente não encontrado", true);
-        }
-
-        Cliente clienteEdicao = clienteOpt.get();
-        ClienteForm form = ClienteForm.fromCliente(clienteEdicao);
-        form.setSenha("");
-        return renderForm(autenticado.get(), form, true, clienteEdicao.getId(), erro.orElse(null), sucesso.orElse(null));
+        Optional<Cliente> autenticado = getEmpresa(clienteId);
+        if (autenticado.isEmpty()) return HttpResponse.seeOther(URI.create("/perfil"));
+        return clienteFacade.buscarClienteGerenciavel(id)
+                .<HttpResponse<?>>map(cliente -> renderForm(autenticado.get(), ClienteForm.fromCliente(cliente), true, cliente.getId(), erro.orElse(null), sucesso.orElse(null)))
+                .orElseGet(() -> HttpResponse.seeOther(URI.create("/clientes?erro=Cliente não encontrado")));
     }
 
-    @Post("/{id}/editar")
+    @Post("/{id}")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public HttpResponse<?> atualizar(@CookieValue(value = AuthSessionFacade.AUTH_COOKIE) Optional<Long> clienteId,
                                      @PathVariable Long id,
                                      @Body @Valid ClienteForm form) {
-        Optional<Cliente> autenticado = clienteId.flatMap(authSessionFacade::getClienteAutenticado);
-        if (autenticado.isEmpty()) {
-            return HttpResponse.seeOther(URI.create("/"));
-        }
+        Optional<Cliente> autenticado = getEmpresa(clienteId);
+        if (autenticado.isEmpty()) return HttpResponse.seeOther(URI.create("/perfil"));
         try {
             clienteFacade.atualizar(id, form);
-            return redirectComMensagem("/clientes", "Cliente atualizado com sucesso", false);
-        } catch (ResourceNotFoundException exception) {
-            return redirectComMensagem("/clientes", exception.getMessage(), true);
-        } catch (DuplicateResourceException | IllegalArgumentException | IllegalStateException exception) {
-            return renderForm(autenticado.get(), form, true, id, exception.getMessage(), null);
+            return HttpResponse.seeOther(URI.create("/clientes?sucesso=Cliente atualizado com sucesso"));
+        } catch (DuplicateResourceException | IllegalArgumentException e) {
+            return renderForm(autenticado.get(), form, true, id, e.getMessage(), null);
+        } catch (ResourceNotFoundException e) {
+            return HttpResponse.seeOther(URI.create("/clientes?erro=" + encode(e.getMessage())));
         }
     }
 
@@ -122,48 +104,41 @@ public class ClienteController {
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public HttpResponse<?> remover(@CookieValue(value = AuthSessionFacade.AUTH_COOKIE) Optional<Long> clienteId,
                                    @PathVariable Long id) {
-        Optional<Cliente> autenticado = clienteId.flatMap(authSessionFacade::getClienteAutenticado);
-        if (autenticado.isEmpty()) {
-            return HttpResponse.seeOther(URI.create("/"));
-        }
+        Optional<Cliente> autenticado = getEmpresa(clienteId);
+        if (autenticado.isEmpty()) return HttpResponse.seeOther(URI.create("/perfil"));
         try {
             clienteFacade.remover(id);
-            return redirectComMensagem("/clientes", "Cliente removido com sucesso", false);
-        } catch (ResourceNotFoundException | OperationNotAllowedException | IllegalArgumentException | IllegalStateException exception) {
-            return renderList(autenticado.get(), exception.getMessage(), null);
+            return HttpResponse.seeOther(URI.create("/clientes?sucesso=Cliente removido com sucesso"));
+        } catch (ResourceNotFoundException | OperationNotAllowedException e) {
+            return HttpResponse.seeOther(URI.create("/clientes?erro=" + encode(e.getMessage())));
         }
     }
 
-    private HttpResponse<?> renderList(Cliente autenticado, String erro, String sucesso) {
+    private Optional<Cliente> getEmpresa(Optional<Long> clienteId) {
+        return clienteId.flatMap(authSessionFacade::getClienteAutenticado).filter(Cliente::isEmpresa);
+    }
+
+    private HttpResponse<ModelAndView<Map<String, Object>>> renderList(Cliente autenticado, String erro, String sucesso) {
         Map<String, Object> model = new HashMap<>();
-        model.put("title", "Clientes");
         model.put("cliente", autenticado);
-        model.put("clientes", clienteFacade.listarTodos());
+        model.put("clientes", clienteFacade.listarClientesGerenciaveis());
         model.put("erro", erro);
         model.put("sucesso", sucesso);
+        model.put("title", "Gerenciar usuários");
         return HttpResponse.ok(new ModelAndView<>("clientes/list", model));
     }
 
-    private HttpResponse<?> renderForm(Cliente autenticado,
-                                       ClienteForm form,
-                                       boolean modoEdicao,
-                                       Long clienteId,
-                                       String erro,
-                                       String sucesso) {
+    private HttpResponse<ModelAndView<Map<String, Object>>> renderForm(Cliente autenticado, ClienteForm form, boolean edicao, Long clienteEdicaoId, String erro, String sucesso) {
         Map<String, Object> model = new HashMap<>();
-        model.put("title", modoEdicao ? "Editar Cliente" : "Novo Cliente");
         model.put("cliente", autenticado);
         model.put("form", form);
-        model.put("modoEdicao", modoEdicao);
-        model.put("clienteId", clienteId);
+        model.put("edicao", edicao);
+        model.put("clienteEdicaoId", clienteEdicaoId);
         model.put("erro", erro);
         model.put("sucesso", sucesso);
+        model.put("title", edicao ? "Editar cliente" : "Novo cliente");
         return HttpResponse.ok(new ModelAndView<>("clientes/form", model));
     }
 
-    private HttpResponse<?> redirectComMensagem(String path, String mensagem, boolean erro) {
-        String parametro = erro ? "erro" : "sucesso";
-        String encoded = URLEncoder.encode(mensagem, StandardCharsets.UTF_8);
-        return HttpResponse.seeOther(URI.create(path + "?" + parametro + "=" + encoded));
-    }
+    private String encode(String value) { return URLEncoder.encode(value, StandardCharsets.UTF_8); }
 }
