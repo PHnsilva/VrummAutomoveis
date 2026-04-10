@@ -3,12 +3,15 @@
 body { margin:0; min-height:100vh; display:flex; flex-direction:column; font-family:'Bitter',sans-serif; background:#f8fafc; color:#0f172a; }
 a { color:inherit; }
 .navbar { display:flex; justify-content:space-between; align-items:center; padding:18px 32px; background:#111827; color:#fff; }
-.nav-brand a { color:#fff; text-decoration:none; font-size:24px; font-weight:800; }
+
+.nav-brand a { display:inline-flex; align-items:baseline; gap:2px; color:#fff; text-decoration:none; }
+.nav-brand-text { font-size:26px; font-weight:900; letter-spacing:.04em; }
+.nav-brand-dot { color:#ef4444; font-size:34px; font-weight:900; line-height:1; text-shadow:0 0 16px rgba(239,68,68,.45); }
 .nav-links { display:flex; align-items:center; gap:18px; flex-wrap:wrap; }
 .nav-links a { color:#fff; text-decoration:none; font-weight:600; }
 .nav-user { display:inline-flex; align-items:center; gap:10px; padding:8px 12px; border-radius:999px; background:rgba(255,255,255,.1); text-decoration:none; }
 .nav-user-role { padding:4px 8px; border-radius:999px; background:rgba(255,255,255,.16); font-size:12px; font-weight:700; }
-.nav-logout { padding:10px 16px; border-radius:999px; border:1px solid rgba(255,255,255,.25); }
+.nav-logout { padding:10px 16px; border-radius:999px; border:1px solid rgba(255,255,255,.25); background-color: #991b1b;}
 .page-shell { flex:1; width:min(1200px, calc(100% - 32px)); margin:32px auto; }
 .footer { padding:18px 32px; text-align:center; color:#64748b; }
 .card { background:#fff; border:1px solid #e2e8f0; border-radius:24px; padding:28px; box-shadow:0 10px 30px rgba(15,23,42,.06); }
@@ -53,7 +56,6 @@ th { color:#475569; font-size:14px; }
 .status-badge--info { background:#dbeafe; color:#1d4ed8; }
 .status-badge--success { background:#dcfce7; color:#166534; }
 .status-badge--danger { background:#fee2e2; color:#991b1b; }
-.status-badge--neutral { background:#e2e8f0; color:#334155; }
 .detail-grid { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:16px; margin-bottom:24px; }
 .detail-item { display:grid; gap:6px; padding:18px; border:1px solid #e2e8f0; border-radius:18px; }
 .detail-item-full { grid-column:1 / -1; }
@@ -69,6 +71,3 @@ th { color:#475569; font-size:14px; }
   .page-shell { width:min(100% - 24px, 1200px); margin:16px auto; }
   .navbar { padding:16px 20px; }
 }
-
-.detail-section { display:grid; gap:14px; margin:24px 0; padding-top:12px; border-top:1px solid #e2e8f0; }
-.compact-form { margin-top:8px; }
