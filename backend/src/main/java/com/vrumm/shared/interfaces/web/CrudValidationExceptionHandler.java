@@ -6,6 +6,7 @@ import io.micronaut.http.HttpResponse;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.annotation.Produces;
 import io.micronaut.http.server.exceptions.ExceptionHandler;
+import io.micronaut.context.annotation.Replaces;
 import jakarta.inject.Singleton;
 import jakarta.validation.ConstraintViolationException;
 
@@ -18,9 +19,11 @@ import java.util.stream.Collectors;
 
 @Produces
 @Singleton
+@Replaces(io.micronaut.validation.exceptions.ConstraintExceptionHandler.class)
 public class CrudValidationExceptionHandler implements ExceptionHandler<ConstraintViolationException, HttpResponse<?>> {
 
     private static final Pattern EDITAR_CLIENTE = Pattern.compile("^/clientes/(\\d+)/editar$");
+    private static final String EDITAR_PERFIL = "/perfil/editar";
 
     @Override
     public HttpResponse<?> handle(HttpRequest request, ConstraintViolationException exception) {
@@ -39,8 +42,17 @@ public class CrudValidationExceptionHandler implements ExceptionHandler<Constrai
                     path));
         }
 
+        if (EDITAR_PERFIL.equals(path)) {
+            String encoded = URLEncoder.encode(finalMessage, StandardCharsets.UTF_8);
+            return HttpResponse.seeOther(URI.create(EDITAR_PERFIL + "?erro=" + encoded));
+        }
+
         if (!path.startsWith("/clientes")) {
-            throw exception;
+            return HttpResponse.badRequest(ApiErrorResponse.of(
+                    HttpStatus.BAD_REQUEST.getCode(),
+                    HttpStatus.BAD_REQUEST.getReason(),
+                    finalMessage,
+                    path));
         }
 
         String redirectPath = "/clientes";

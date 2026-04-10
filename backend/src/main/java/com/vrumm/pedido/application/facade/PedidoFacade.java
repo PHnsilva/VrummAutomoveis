@@ -74,9 +74,9 @@ public class PedidoFacade {
                 clienteId,
                 automovel.getId(),
                 form.getObservacao(),
-                form.getValorEntrada(),
-                form.getPrazoMeses(),
-                form.getRendaDeclarada()
+                form.getValorEntradaBigDecimal(),
+                form.getPrazoMesesInteger(),
+                form.getRendaDeclaradaBigDecimal()
         );
         return pedidoRepository.save(pedido);
     }
@@ -100,7 +100,7 @@ public class PedidoFacade {
         if (!automovel.isDisponivel() && !automovel.getId().equals(pedido.getAutomovelId())) {
             throw new IllegalArgumentException("Automóvel indisponível para o pedido");
         }
-        pedido.atualizarSolicitacao(automovel.getId(), form.getObservacao(), form.getValorEntrada(), form.getPrazoMeses(), form.getRendaDeclarada());
+        pedido.atualizarSolicitacao(automovel.getId(), form.getObservacao(), form.getValorEntradaBigDecimal(), form.getPrazoMesesInteger(), form.getRendaDeclaradaBigDecimal());
         return pedidoRepository.update(pedido);
     }
 
@@ -299,9 +299,9 @@ public class PedidoFacade {
         PedidoForm form = new PedidoForm();
         form.setAutomovelId(pedido.getAutomovelId());
         form.setObservacao(pedido.getObservacao());
-        form.setValorEntrada(pedido.getValorEntrada());
-        form.setPrazoMeses(pedido.getPrazoMeses());
-        form.setRendaDeclarada(pedido.getRendaDeclarada());
+        form.setValorEntrada(pedido.getValorEntrada() == null ? null : pedido.getValorEntrada().stripTrailingZeros().toPlainString());
+        form.setPrazoMeses(pedido.getPrazoMeses() == null ? null : String.valueOf(pedido.getPrazoMeses()));
+        form.setRendaDeclarada(pedido.getRendaDeclarada() == null ? null : pedido.getRendaDeclarada().stripTrailingZeros().toPlainString());
         return form;
     }
 

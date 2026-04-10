@@ -3,10 +3,7 @@ package com.vrumm.pedido.application.dto;
 import com.vrumm.pedido.domain.model.PedidoAluguel;
 import io.micronaut.core.annotation.Introspected;
 import io.micronaut.serde.annotation.Serdeable;
-import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 
 import java.math.BigDecimal;
@@ -21,24 +18,17 @@ public class PedidoForm {
     @Size(max = 500)
     private String observacao;
 
-    @DecimalMin(value = "0.0")
-    @Digits(integer = 12, fraction = 2)
-    private BigDecimal valorEntrada;
-
-    @Positive
-    private Integer prazoMeses;
-
-    @DecimalMin(value = "0.0")
-    @Digits(integer = 12, fraction = 2)
-    private BigDecimal rendaDeclarada;
+    private String valorEntrada;
+    private String prazoMeses;
+    private String rendaDeclarada;
 
     public static PedidoForm fromPedido(PedidoAluguel pedido) {
         PedidoForm form = new PedidoForm();
         form.setAutomovelId(pedido.getAutomovelId());
         form.setObservacao(pedido.getObservacao());
-        form.setValorEntrada(pedido.getValorEntrada());
-        form.setPrazoMeses(pedido.getPrazoMeses());
-        form.setRendaDeclarada(pedido.getRendaDeclarada());
+        form.setValorEntrada(formatarDecimal(pedido.getValorEntrada()));
+        form.setPrazoMeses(formatarInteiro(pedido.getPrazoMeses()));
+        form.setRendaDeclarada(formatarDecimal(pedido.getRendaDeclarada()));
         return form;
     }
 
@@ -48,12 +38,48 @@ public class PedidoForm {
     public String getObservacao() { return observacao; }
     public void setObservacao(String observacao) { this.observacao = observacao; }
 
-    public BigDecimal getValorEntrada() { return valorEntrada; }
-    public void setValorEntrada(BigDecimal valorEntrada) { this.valorEntrada = valorEntrada; }
+    public String getValorEntrada() { return valorEntrada; }
+    public void setValorEntrada(String valorEntrada) { this.valorEntrada = normalizarNumero(valorEntrada); }
 
-    public Integer getPrazoMeses() { return prazoMeses; }
-    public void setPrazoMeses(Integer prazoMeses) { this.prazoMeses = prazoMeses; }
+    public String getPrazoMeses() { return prazoMeses; }
+    public void setPrazoMeses(String prazoMeses) { this.prazoMeses = normalizarNumero(prazoMeses); }
 
-    public BigDecimal getRendaDeclarada() { return rendaDeclarada; }
-    public void setRendaDeclarada(BigDecimal rendaDeclarada) { this.rendaDeclarada = rendaDeclarada; }
+    public String getRendaDeclarada() { return rendaDeclarada; }
+    public void setRendaDeclarada(String rendaDeclarada) { this.rendaDeclarada = normalizarNumero(rendaDeclarada); }
+
+    public BigDecimal getValorEntradaBigDecimal() { return parseDecimal(valorEntrada, "Valor de entrada"); }
+    public Integer getPrazoMesesInteger() { return parseInteger(prazoMeses, "Prazo desejado em meses"); }
+    public BigDecimal getRendaDeclaradaBigDecimal() { return parseDecimal(rendaDeclarada, "Renda declarada"); }
+
+    private static String normalizarNumero(String valor) {
+        if (valor == null) return null;
+        String texto = valor.trim();
+        return texto.isEmpty() ? null : texto;
+    }
+
+    private static BigDecimal parseDecimal(String valor, String campo) {
+        if (valor == null || valor.isBlank()) return null;
+        try {
+            return new BigDecimal(valor.replace(',', '.').trim());
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException(campo + " inválido");
+        }
+    }
+
+    private static Integer parseInteger(String valor, String campo) {
+        if (valor == null || valor.isBlank()) return null;
+        try {
+            return Integer.valueOf(valor.trim());
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException(campo + " inválido");
+        }
+    }
+
+    private static String formatarDecimal(BigDecimal valor) {
+        return valor == null ? null : valor.stripTrailingZeros().toPlainString();
+    }
+
+    private static String formatarInteiro(Integer valor) {
+        return valor == null ? null : String.valueOf(valor);
+    }
 }
