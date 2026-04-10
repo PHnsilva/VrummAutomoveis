@@ -3,7 +3,8 @@ package com.vrumm.pedido.domain.model;
 public enum PedidoStatus {
     AGUARDANDO_PAGAMENTO("Aguardando pagamento", "status-badge status-badge--info"),
     FINALIZADO("Finalizado", "status-badge status-badge--success"),
-    RECUSADO("Recusado", "status-badge status-badge--danger");
+    RECUSADO("Recusado", "status-badge status-badge--danger"),
+    CANCELADO("Cancelado", "status-badge status-badge--neutral");
 
     private final String descricao;
     private final String badgeClass;

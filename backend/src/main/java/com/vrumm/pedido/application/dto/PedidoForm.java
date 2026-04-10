@@ -1,5 +1,6 @@
 package com.vrumm.pedido.application.dto;
 
+import com.vrumm.pedido.domain.model.PedidoAluguel;
 import io.micronaut.core.annotation.Introspected;
 import io.micronaut.serde.annotation.Serdeable;
 import jakarta.validation.constraints.DecimalMin;
@@ -30,6 +31,16 @@ public class PedidoForm {
     @DecimalMin(value = "0.0")
     @Digits(integer = 12, fraction = 2)
     private BigDecimal rendaDeclarada;
+
+    public static PedidoForm fromPedido(PedidoAluguel pedido) {
+        PedidoForm form = new PedidoForm();
+        form.setAutomovelId(pedido.getAutomovelId());
+        form.setObservacao(pedido.getObservacao());
+        form.setValorEntrada(pedido.getValorEntrada());
+        form.setPrazoMeses(pedido.getPrazoMeses());
+        form.setRendaDeclarada(pedido.getRendaDeclarada());
+        return form;
+    }
 
     public Long getAutomovelId() { return automovelId; }
     public void setAutomovelId(Long automovelId) { this.automovelId = automovelId; }
