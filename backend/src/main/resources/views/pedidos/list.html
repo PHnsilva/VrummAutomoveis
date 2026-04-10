@@ -11,7 +11,7 @@
             <div>
                 <span class="eyebrow">Pedidos</span>
                 <h1>Meus pedidos</h1>
-                <p class="form-helper">Acompanhe o status das suas solicitações de aluguel.</p>
+                <p class="form-helper">Acompanhe, edite e cancele suas solicitações de aluguel enquanto o fluxo estiver aberto.</p>
             </div>
             <div class="header-actions">
                 <a class="button-secondary" th:href="@{/perfil}">Meu perfil</a>
@@ -45,7 +45,13 @@
                     <td th:text="${item.dataCriacaoFormatada}">00/00/0000 00:00</td>
                     <td th:text="${item.finalizado ? item.valorPagoFormatado : '—'}">—</td>
                     <td>
-                        <a class="button-secondary small" th:href="@{/pedidos/{id}(id=${item.id})}">Consultar status</a>
+                        <div class="admin-actions">
+                            <a class="button-secondary small" th:href="@{/pedidos/{id}(id=${item.id})}">Consultar status</a>
+                            <a class="button-secondary small" th:if="${item.podeEditar}" th:href="@{/pedidos/{id}/editar(id=${item.id})}">Editar</a>
+                            <form th:if="${item.podeCancelar}" th:action="@{/pedidos/{id}/cancelar(id=${item.id})}" method="post">
+                                <button class="button-danger small" type="submit">Cancelar</button>
+                            </form>
+                        </div>
                     </td>
                 </tr>
                 </tbody>

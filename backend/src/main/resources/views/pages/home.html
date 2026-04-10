@@ -9,10 +9,12 @@
     <section class="card hero-card">
         <span class="eyebrow">Área autenticada</span>
         <h1>Olá, <span th:text="${cliente.nome}">Cliente</span>.</h1>
-        <p>Este é o seu espaço pessoal na plataforma VRUMM. Aqui você acompanha seu cadastro, seus pedidos e os próximos passos do fluxo.</p>
+        <p>Este é o seu espaço pessoal na plataforma VRUMM. A partir daqui você acessa as funções do seu perfil de uso.</p>
         <div class="action-row">
-            <a class="button-primary" th:if="${cliente.admin}" th:href="@{/admin/pedidos}">Painel de pedidos</a>
-            <a class="button-primary" th:if="${!cliente.admin}" th:href="@{/pedidos}">Meus pedidos</a>
+            <a class="button-primary" th:if="${cliente.cliente}" th:href="@{/pedidos}">Meus pedidos</a>
+            <a class="button-primary" th:if="${cliente.empresa}" th:href="@{/empresa/pedidos}">Painel da empresa</a>
+            <a class="button-primary" th:if="${cliente.banco}" th:href="@{/banco/pedidos}">Painel do banco</a>
+            <a class="button-secondary" th:if="${cliente.empresa}" th:href="@{/clientes}">Gerenciar usuários</a>
             <a class="button-secondary" th:href="@{/swagger-ui/index.html}">Abrir Swagger</a>
         </div>
     </section>

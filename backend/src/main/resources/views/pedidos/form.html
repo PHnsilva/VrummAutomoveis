@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org"
       th:replace="~{layout/base :: layout(~{::title}, ~{::content})}">
 <head>
-    <title>Novo Pedido</title>
+    <title th:text="${edicao} ? 'Editar Pedido' : 'Novo Pedido'">Pedido</title>
 </head>
 <body>
 <div th:fragment="content" class="crud-wrapper">
@@ -10,30 +10,22 @@
         <div class="card-header-row">
             <div>
                 <span class="eyebrow">Pedidos</span>
-                <h1>Novo pedido de aluguel</h1>
+                <h1 th:text="${edicao} ? 'Editar pedido de aluguel' : 'Novo pedido de aluguel'">Novo pedido de aluguel</h1>
                 <p class="form-helper">Solicitante: <strong th:text="${cliente.nome}">Cliente</strong></p>
             </div>
-            <a class="button-secondary" th:href="@{/perfil}">Voltar</a>
+            <a class="button-secondary" th:href="@{/pedidos}">Voltar</a>
         </div>
 
-        <div class="alert alert-success" th:if="${sucesso != null}" th:text="${sucesso}">Pedido criado.</div>
-        <div class="alert alert-error" th:if="${erro != null}" th:text="${erro}">Erro ao criar pedido.</div>
-        <div class="alert alert-info" th:if="${#lists.isEmpty(automoveis)}">
-            Nenhum automóvel disponível no momento. Cadastre ou libere um automóvel antes de criar pedidos.
-        </div>
+        <div class="alert alert-error" th:if="${erro != null}" th:text="${erro}">Erro ao salvar pedido.</div>
+        <div class="alert alert-info" th:if="${#lists.isEmpty(automoveis)}">Nenhum automóvel disponível no momento.</div>
 
-        <form class="cliente-form" th:action="@{/pedidos}" method="post">
+        <form class="cliente-form" th:action="${edicao} ? @{/pedidos/{id}/editar(id=${pedidoId})} : @{/pedidos}" method="post">
             <div class="form-grid page-form-grid">
                 <div class="form-group form-group-full">
                     <label>Automóvel</label>
                     <select name="automovelId" required>
                         <option value="">Selecione um automóvel</option>
-                        <option th:each="item : ${automoveis}"
-                                th:value="${item.id}"
-                                th:text="${item.descricaoExibicao}"
-                                th:selected="${form.automovelId != null and form.automovelId == item.id}">
-                            Automóvel
-                        </option>
+                        <option th:each="item : ${automoveis}" th:value="${item.id}" th:text="${item.descricaoExibicao}" th:selected="${form.automovelId != null and form.automovelId == item.id}">Automóvel</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -53,7 +45,7 @@
                     <textarea name="observacao" rows="4" maxlength="500" th:text="${form.observacao}"></textarea>
                 </div>
             </div>
-            <button class="button-primary" type="submit" th:disabled="${#lists.isEmpty(automoveis)}">Enviar pedido</button>
+            <button class="button-primary" type="submit" th:disabled="${#lists.isEmpty(automoveis)}" th:text="${edicao} ? 'Salvar alterações' : 'Enviar pedido'}">Enviar pedido</button>
         </form>
     </section>
 </div>

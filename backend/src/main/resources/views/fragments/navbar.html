@@ -5,9 +5,10 @@
     <div class="nav-brand"><a th:href="@{/}">VRUMM</a></div>
     <div class="nav-links">
         <a th:href="@{/}">Início</a>
-        <a th:if="${cliente != null and !cliente.admin}" th:href="@{/pedidos}">Meus pedidos</a>
-        <a th:if="${cliente != null and cliente.admin}" th:href="@{/admin/pedidos}">Painel pedidos</a>
-        <a th:if="${cliente != null and cliente.admin}" th:href="@{/clientes}">Gerenciar usuários</a>
+        <a th:if="${cliente != null and cliente.cliente}" th:href="@{/pedidos}">Meus pedidos</a>
+        <a th:if="${cliente != null and cliente.empresa}" th:href="@{/empresa/pedidos}">Painel empresa</a>
+        <a th:if="${cliente != null and cliente.empresa}" th:href="@{/clientes}">Gerenciar usuários</a>
+        <a th:if="${cliente != null and cliente.banco}" th:href="@{/banco/pedidos}">Painel banco</a>
         <a th:href="@{/swagger-ui/index.html}">Swagger</a>
         <a class="nav-user" th:if="${cliente != null}" th:href="@{/perfil}">
             <span th:text="${cliente.nome}">Cliente</span>

@@ -2,16 +2,16 @@
 <html xmlns:th="http://www.thymeleaf.org"
       th:replace="~{layout/base :: layout(~{::title}, ~{::content})}">
 <head>
-    <title>Painel de Pedidos</title>
+    <title th:text="${title}">Painel do Agente</title>
 </head>
 <body>
 <div th:fragment="content" class="crud-wrapper">
     <section class="card">
         <div class="card-header-row">
             <div>
-                <span class="eyebrow">Administração</span>
-                <h1>Painel de pedidos</h1>
-                <p class="form-helper">Gerencie o fluxo de cobrança, confirmação manual de pagamento e recusa dos pedidos cadastrados.</p>
+                <span class="eyebrow" th:text="${agenteLabel}">Agente</span>
+                <h1 th:text="${'Painel de pedidos - ' + agenteLabel}">Painel de pedidos</h1>
+                <p class="form-helper">Modifique, avalie e recuse pedidos de aluguel conforme o seu perfil de agente.</p>
             </div>
             <div class="header-actions">
                 <a class="button-secondary" th:href="@{/perfil}">Meu perfil</a>
@@ -22,7 +22,7 @@
         <div class="alert alert-success" th:if="${sucesso != null}" th:text="${sucesso}">Status atualizado.</div>
         <div class="alert alert-error" th:if="${erro != null}" th:text="${erro}">Erro ao atualizar status.</div>
 
-        <form class="filter-form" th:action="@{/admin/pedidos}" method="get">
+        <form class="filter-form" th:attr="action=${painelPath}" method="get">
             <div class="form-group filter-form__group">
                 <label>Filtrar por status</label>
                 <select name="status">
@@ -51,7 +51,7 @@
                     <th>Automóvel</th>
                     <th>Status</th>
                     <th>Criado em</th>
-                    <th>Valor pago</th>
+                    <th>Parecer</th>
                     <th>Ações rápidas</th>
                 </tr>
                 </thead>
@@ -65,16 +65,20 @@
                     <td th:text="${item.automovelDescricao}">Automóvel</td>
                     <td><span th:class="${item.statusBadgeClass}" th:text="${item.statusDescricao}">Status</span></td>
                     <td th:text="${item.dataCriacaoFormatada}">00/00/0000 00:00</td>
-                    <td th:text="${item.finalizado ? item.valorPagoFormatado : '—'}">—</td>
+                    <td>
+                        <strong th:if="${item.agenteNome != null}" th:text="${item.agenteNome}">Agente</strong>
+                        <div class="table-muted" th:if="${item.agenteTipoDescricao != null}" th:text="${item.agenteTipoDescricao}">Empresa</div>
+                        <div class="table-muted" th:if="${item.parecerObservacao != null}" th:text="${item.parecerObservacao}">Parecer</div>
+                        <span th:if="${item.agenteNome == null}">—</span>
+                    </td>
                     <td>
                         <div class="admin-actions">
                             <a class="button-secondary small" th:href="@{/pedidos/{id}(id=${item.id})}">Detalhes</a>
-                            <form th:if="${item.podeRecusar}"
-                                  th:action="@{/admin/pedidos/{id}/recusar(id=${item.id}, status=${statusAtual})}"
-                                  method="post">
+                            <a class="button-secondary small" th:if="${item.podeEditar}" th:href="@{/pedidos/{id}/editar(id=${item.id})}">Editar</a>
+                            <form th:if="${item.podeRecusar}" th:attr="action=${painelPath + '/' + item.id + '/recusar'}" method="post">
                                 <button class="button-danger small" type="submit">Recusar</button>
                             </form>
-                            <span class="table-muted" th:if="${item.statusCodigo == 'AGUARDANDO_PAGAMENTO'}">Aguardando confirmação manual de pagamento</span>
+                            <span class="table-muted" th:if="${item.statusCodigo == 'AGUARDANDO_PAGAMENTO'}">Aguardando avaliação final e pagamento manual</span>
                             <span class="table-muted" th:if="${item.finalizado}">Pagamento confirmado</span>
                             <span class="table-muted" th:if="${item.statusCodigo == 'RECUSADO'}">Fluxo encerrado</span>
                         </div>

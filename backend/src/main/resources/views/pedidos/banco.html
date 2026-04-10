@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/base :: layout(~{::title}, ~{::content})}">
+<head>
+    <title>Painel do Banco</title>
+</head>
+<body>
+<div th:fragment="content" class="crud-wrapper">
+    <section class="card">
+        <div class="card-header-row">
+            <div>
+                <span class="eyebrow">Banco</span>
+                <h1>Painel financeiro de pedidos</h1>
+                <p class="form-helper">O banco avalia financeiramente os pedidos, confirma pagamentos e registra contratos de crédito.</p>
+            </div>
+            <div class="header-actions">
+                <a class="button-secondary" th:href="@{/perfil}">Meu perfil</a>
+            </div>
+        </div>
+
+        <div class="alert alert-success" th:if="${sucesso != null}" th:text="${sucesso}">Operação concluída.</div>
+        <div class="alert alert-error" th:if="${erro != null}" th:text="${erro}">Erro ao atualizar pedido.</div>
+
+        <form class="filter-form" th:action="@{/banco/pedidos}" method="get">
+            <div class="form-group filter-form__group">
+                <label>Filtrar por status</label>
+                <select name="status">
+                    <option value="TODOS" th:selected="${statusAtual == 'TODOS'}">Todos</option>
+                    <option th:each="status : ${statusDisponiveis}" th:value="${status.name()}" th:text="${status.descricao}" th:selected="${statusAtual == status.name()}">Status</option>
+                </select>
+            </div>
+            <button class="button-secondary" type="submit">Aplicar filtro</button>
+        </form>
+
+        <div class="table-wrapper" th:if="${!#lists.isEmpty(pedidos)}">
+            <table>
+                <thead>
+                <tr>
+                    <th>Pedido</th>
+                    <th>Cliente</th>
+                    <th>Status</th>
+                    <th>Parecer financeiro</th>
+                    <th>Crédito</th>
+                    <th>Ações</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="item : ${pedidos}">
+                    <td th:text="${'#' + item.id}">#1</td>
+                    <td>
+                        <strong th:text="${item.clienteNome}">Cliente</strong>
+                        <div class="table-muted" th:text="${item.automovelDescricao}">Automóvel</div>
+                    </td>
+                    <td><span th:class="${item.statusBadgeClass}" th:text="${item.statusDescricao}">Status</span></td>
+                    <td>
+                        <strong th:text="${item.parecerFinanceiroDescricao}">Parecer</strong>
+                        <div class="table-muted" th:text="${item.bancoAvaliadorNome != null ? item.bancoAvaliadorNome : 'Sem banco vinculado'}">Banco</div>
+                    </td>
+                    <td>
+                        <strong th:text="${item.possuiContratoCredito ? item.valorCreditoFormatado : 'Não registrado'}">Crédito</strong>
+                        <div class="table-muted" th:text="${item.possuiContratoCredito ? item.numeroReferenciaCredito : 'Sem referência'}">Referência</div>
+                    </td>
+                    <td>
+                        <a class="button-secondary small" th:href="@{/pedidos/{id}(id=${item.id})}">Detalhes financeiros</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="alert alert-info" th:if="${#lists.isEmpty(pedidos)}">Nenhum pedido encontrado para o filtro selecionado.</div>
+    </section>
+</div>
+</body>
+</html>
