@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
 <div th:fragment="navbar" class="navbar">
-    <div class="nav-brand"><a th:href="@{/}"><span class="nav-brand-text">VRUMM</span><span class="nav-brand-dot"> .</span></a></div>
+    <div class="nav-brand"><a th:href="@{/}"><span class="nav-brand-text">VRUMM</span><span class="nav-brand-dot">.</span></a></div>
     <div class="nav-links">
         <a th:href="@{/}">Início</a>
         <a th:if="${cliente != null and cliente.cliente}" th:href="@{/pedidos}">Meus pedidos</a>
