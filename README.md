@@ -16,6 +16,8 @@ Hoje a aplicação atende três contextos operacionais centrais — **cliente**,
 ---
 
 ## 📚 Índice
+- [Deploy](#-deploy)
+- [Apresentação do Sistema](#-apresentação-do-sistema)
 - [Sobre o Projeto](#-sobre-o-projeto)
 - [Funcionalidades](#-funcionalidades)
 - [Tecnologias](#-tecnologias)
@@ -30,6 +32,10 @@ Hoje a aplicação atende três contextos operacionais centrais — **cliente**,
 - [Documentação Técnica](#-documentação-técnica)
 - [Troubleshooting](#-troubleshooting)
 
+---
+
+## 🚀 Deploy
+- **Aplicação publicada:** [https://vrummautomoveis.onrender.com](https://vrummautomoveis.onrender.com)
 ---
 
 ## 📝 Sobre o Projeto
@@ -86,6 +92,7 @@ Na prática, o sistema funciona como um **monólito modular**, em que cada domí
 - **Flyway**
 - **PostgreSQL**
 - **Maven**
+- **Docker**
 
 ### Dependências e recursos relevantes
 - **HikariCP** para pool de conexões JDBC;
@@ -266,35 +273,94 @@ Ainda assim, a base arquitetural atual é sólida para continuar evoluindo sem r
 
 ---
 
+## 🖼️ Apresentação do Sistema
+`docs/apresentacao/telas/`
+
+### Estrutura de pastas das telas
+```txt
+/docs/apresentacao/
+├── telas/
+│   ├── 01-landing/                 # Tela inicial e navegação principal
+│   │   └── landing.png
+│   ├── 02-autenticacao/            # Login, cadastro e autenticação
+│   │   ├── login.png
+│   │   └── cadastro.png
+│   ├── 03-cliente/                 # Fluxos do cliente
+│   │   ├── perfil.png
+│   │   ├── pedidos.png
+│   │   └── detalhes-pedido.png
+│   ├── 04-empresa/                 # Painel operacional da empresa
+│   │   ├── painel-empresa.png
+│   │   └── contrato-operacional.png
+│   ├── 05-banco/                   # Painel financeiro do banco
+│   │   ├── painel-banco.png
+│   │   └── contrato-credito.png
+│   └── 06-swagger/                 # Documentação e endpoints
+│       └── swagger-ui.png
+```
+
+#### Landing page
+![Landing page](docs/apresentacao/telas/01-landing/landing.png)
+
+#### Login
+![Tela de login](docs/apresentacao/telas/02-autenticacao/login.png)
+
+#### Cadastro
+![Tela de cadastro](docs/apresentacao/telas/02-autenticacao/cadastro.png)
+
+#### Perfil do cliente
+![Perfil do cliente](docs/apresentacao/telas/03-cliente/perfil.png)
+
+#### Área de pedidos do cliente
+![Área de pedidos do cliente](docs/apresentacao/telas/03-cliente/pedidos.png)
+
+#### Detalhes do pedido
+![Detalhes do pedido](docs/apresentacao/telas/03-cliente/detalhes-pedido.png)
+
+#### Painel da empresa
+![Painel da empresa](docs/apresentacao/telas/04-empresa/painel-empresa.png)
+
+#### Contrato operacional
+![Contrato operacional](docs/apresentacao/telas/04-empresa/contrato-operacional.png)
+
+#### Painel do banco
+![Painel do banco](docs/apresentacao/telas/05-banco/painel-banco.png)
+
+#### Contrato de crédito
+![Contrato de crédito](docs/apresentacao/telas/05-banco/contrato-credito.png)
+
+#### Swagger UI
+![Swagger UI](docs/apresentacao/telas/06-swagger/swagger-ui.png)
+
+---
+
 ## 🔐 Variáveis de Ambiente
-Atualmente, a configuração principal está em `src/main/resources/application.properties`.
+Atualmente, a configuração principal está em `src/main/resources/application.properties`, com suporte a valores vindos de variáveis de ambiente para facilitar execução local, Docker e deploy.
 
 | Variável / Propriedade | Obrigatória | Descrição | Exemplo |
 |---|---|---|---|
-| `micronaut.server.port` | Sim | Porta HTTP da aplicação | `8080` |
-| `datasources.default.url` | Sim | URL do PostgreSQL | `jdbc:postgresql://localhost:5432/vrumm_automoveis` |
-| `datasources.default.username` | Sim | Usuário do banco | `admin` |
-| `datasources.default.password` | Sim | Senha do banco | `admin` |
+| `PORT` | Não | Porta HTTP da aplicação | `8080` |
+| `DATASOURCES_DEFAULT_URL` | Sim | URL JDBC do PostgreSQL | `jdbc:postgresql://localhost:5432/vrumm_automoveis` |
+| `DATASOURCES_DEFAULT_USERNAME` | Sim | Usuário do banco | `admin` |
+| `DATASOURCES_DEFAULT_PASSWORD` | Sim | Senha do banco | `admin` |
 | `datasources.default.driver-class-name` | Sim | Driver JDBC | `org.postgresql.Driver` |
 | `flyway.datasources.default.enabled` | Sim | Habilita migrações Flyway | `true` |
 
 ### Exemplo mínimo de configuração
 ```properties
-micronaut.server.port=8080
+micronaut.server.port=${PORT:8080}
 
 micronaut.views.thymeleaf.enabled=true
 
-datasources.default.url=jdbc:postgresql://localhost:5432/vrumm_automoveis
-datasources.default.username=admin
-datasources.default.password=admin
+datasources.default.url=${DATASOURCES_DEFAULT_URL:jdbc:postgresql://localhost:5432/vrumm_automoveis}
+datasources.default.username=${DATASOURCES_DEFAULT_USERNAME:admin}
+datasources.default.password=${DATASOURCES_DEFAULT_PASSWORD:admin}
 datasources.default.driver-class-name=org.postgresql.Driver
 datasources.default.dialect=POSTGRES
 
 flyway.datasources.default.enabled=true
 flyway.datasources.default.locations=classpath:db/migration
 ```
-
-> Em ambiente real, o ideal é externalizar credenciais sensíveis para variáveis de ambiente ou arquivos de configuração por perfil.
 
 ---
 
@@ -306,7 +372,12 @@ flyway.datasources.default.locations=classpath:db/migration
 - **PostgreSQL** em execução
 - banco `vrumm_automoveis` criado ou configurado conforme sua instância
 
-### Passos
+ou
+
+- **Docker**
+- **Docker Compose**
+
+### Opção 1: execução local com Maven
 ```bash
 cd backend
 mvn mn:run
@@ -315,6 +386,12 @@ mvn mn:run
 No Windows:
 ```bash
 mvn mn:run
+```
+
+### Opção 2: execução com Docker
+```bash
+cd backend
+docker compose up --build
 ```
 
 ### Endereços úteis em desenvolvimento
@@ -335,6 +412,12 @@ mvn clean package
 ### Execução de testes
 ```bash
 mvn test
+```
+
+### Build da imagem Docker
+```bash
+cd backend
+docker build -t vrumm-backend .
 ```
 
 ### Testes atualmente presentes
@@ -438,9 +521,14 @@ VRUMMAUTOMOVEIS/
 │   │   │       ├── db/              # Scripts e migrações de banco
 │   │   │       └── application.*    # Configurações por ambiente
 │   │   └── test/                    # Testes automatizados
+│   ├── .dockerignore                # Arquivos ignorados na build Docker
+│   ├── Dockerfile                   # Imagem da aplicação para deploy/container
+│   ├── docker-compose.yml           # Orquestração local da aplicação + PostgreSQL
 │   ├── pom.xml                      # Gerenciamento de dependências e build Maven
 │   └── README.md                    # Documentação específica do backend, se existir
 ├── docs/                            # Documentação técnica e artefatos do projeto
+│   ├── apresentacao/                # Materiais visuais e capturas de tela do sistema
+│   │   └── telas/                   # Prints organizadas por contexto de uso
 │   ├── diagramas/
 │   │   ├── caso-de-uso/             # Diagramas de caso de uso
 │   │   ├── classes/                 # Diagramas de classes
@@ -487,7 +575,7 @@ O projeto já possui migrações versionadas (`V1` a `V10`) cobrindo, entre outr
 Verifique:
 - se o PostgreSQL está rodando;
 - se o banco `vrumm_automoveis` existe;
-- se usuário e senha batem com `application.properties`.
+- se usuário e senha batem com `application.properties` ou com as variáveis de ambiente.
 
 ### 2. Migração Flyway falhou
 Se houver mudança manual em migration já aplicada, o Flyway pode acusar checksum mismatch. Nesse caso, revise a migration ou use `repair` apenas quando fizer sentido e com entendimento do impacto.
@@ -505,6 +593,13 @@ Confirme se a aplicação subiu corretamente e se os mapeamentos abaixo permanec
 
 ### 5. Login parece funcionar, mas usuário não permanece autenticado
 Verifique se o cookie `vrumm_cliente_id` está sendo emitido e reenviado pelo navegador nas próximas requisições.
+
+### 6. Problemas ao subir com Docker
+Confirme que:
+- o `Dockerfile` está dentro de `backend/`;
+- o `docker-compose.yml` está dentro de `backend/`;
+- a porta `8080` não está ocupada por outro processo;
+- as variáveis `DATASOURCES_DEFAULT_URL`, `DATASOURCES_DEFAULT_USERNAME` e `DATASOURCES_DEFAULT_PASSWORD` estão corretas quando necessário.
 
 ---
 
