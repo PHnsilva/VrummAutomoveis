@@ -65,7 +65,7 @@ public class ClienteController {
         if (autenticado.isEmpty()) return HttpResponse.seeOther(URI.create("/perfil"));
         try {
             clienteFacade.salvar(form);
-            return HttpResponse.seeOther(URI.create("/clientes?sucesso=Cliente cadastrado com sucesso"));
+            return HttpResponse.seeOther(URI.create("/clientes?sucesso=" + encode("Cliente cadastrado com sucesso")));
         } catch (DuplicateResourceException | IllegalArgumentException e) {
             return renderForm(autenticado.get(), form, false, null, e.getMessage(), null);
         }
@@ -80,7 +80,7 @@ public class ClienteController {
         if (autenticado.isEmpty()) return HttpResponse.seeOther(URI.create("/perfil"));
         return clienteFacade.buscarClienteGerenciavel(id)
                 .<HttpResponse<?>>map(cliente -> renderForm(autenticado.get(), ClienteForm.fromCliente(cliente), true, cliente.getId(), erro.orElse(null), sucesso.orElse(null)))
-                .orElseGet(() -> HttpResponse.seeOther(URI.create("/clientes?erro=Cliente não encontrado")));
+                .orElseGet(() -> HttpResponse.seeOther(URI.create("/clientes?erro=" + encode("Cliente não encontrado"))));
     }
 
     @Post("/{id}")
@@ -92,7 +92,7 @@ public class ClienteController {
         if (autenticado.isEmpty()) return HttpResponse.seeOther(URI.create("/perfil"));
         try {
             clienteFacade.atualizar(id, form);
-            return HttpResponse.seeOther(URI.create("/clientes?sucesso=Cliente atualizado com sucesso"));
+            return HttpResponse.seeOther(URI.create("/clientes?sucesso=" + encode("Cliente atualizado com sucesso")));
         } catch (DuplicateResourceException | IllegalArgumentException e) {
             return renderForm(autenticado.get(), form, true, id, e.getMessage(), null);
         } catch (ResourceNotFoundException e) {
@@ -108,7 +108,7 @@ public class ClienteController {
         if (autenticado.isEmpty()) return HttpResponse.seeOther(URI.create("/perfil"));
         try {
             clienteFacade.remover(id);
-            return HttpResponse.seeOther(URI.create("/clientes?sucesso=Cliente removido com sucesso"));
+            return HttpResponse.seeOther(URI.create("/clientes?sucesso=" + encode("Cliente removido com sucesso")));
         } catch (ResourceNotFoundException | OperationNotAllowedException e) {
             return HttpResponse.seeOther(URI.create("/clientes?erro=" + encode(e.getMessage())));
         }

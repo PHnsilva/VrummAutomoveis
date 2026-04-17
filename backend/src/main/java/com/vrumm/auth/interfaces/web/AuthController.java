@@ -5,6 +5,7 @@ import com.vrumm.auth.application.facade.AuthSessionFacade;
 import com.vrumm.cliente.application.dto.ClienteForm;
 import com.vrumm.cliente.application.facade.ClienteFacade;
 import com.vrumm.cliente.domain.model.Cliente;
+import com.vrumm.shared.exception.DuplicateResourceException;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.MediaType;
 import io.micronaut.http.MutableHttpResponse;
@@ -38,7 +39,7 @@ public class AuthController {
             Cliente cliente = clienteFacade.salvar(form);
             return HttpResponse.seeOther(URI.create("/perfil"))
                     .cookie(authSessionFacade.buildAuthCookie(cliente.getId()));
-        } catch (IllegalArgumentException e) {
+        } catch (DuplicateResourceException | IllegalArgumentException e) {
             return HttpResponse.seeOther(URI.create("/?erro=cadastro"));
         }
     }

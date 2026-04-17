@@ -42,33 +42,9 @@
                 </div>
 
                 <div class="form-section-title form-group-full">Endereço</div>
-                <div class="form-group">
-                    <label>CEP</label>
-                    <input type="text" name="enderecoCep" th:value="${form.enderecoCep}" required>
-                </div>
-                <div class="form-group">
-                    <label>UF</label>
-                    <input type="text" name="enderecoUf" maxlength="2" th:value="${form.enderecoUf}" required>
-                </div>
                 <div class="form-group form-group-full">
-                    <label>Logradouro</label>
-                    <input type="text" name="enderecoLogradouro" th:value="${form.enderecoLogradouro}" required>
-                </div>
-                <div class="form-group">
-                    <label>Número</label>
-                    <input type="text" name="enderecoNumero" th:value="${form.enderecoNumero}" required>
-                </div>
-                <div class="form-group">
-                    <label>Complemento</label>
-                    <input type="text" name="enderecoComplemento" th:value="${form.enderecoComplemento}">
-                </div>
-                <div class="form-group">
-                    <label>Bairro</label>
-                    <input type="text" name="enderecoBairro" th:value="${form.enderecoBairro}" required>
-                </div>
-                <div class="form-group">
-                    <label>Cidade</label>
-                    <input type="text" name="enderecoCidade" th:value="${form.enderecoCidade}" required>
+                    <label>Endereço (opcional)</label>
+                    <input type="text" name="endereco" th:value="${form.endereco}">
                 </div>
 
                 <div class="form-section-title form-group-full">Rendimentos (máximo 3)</div>
