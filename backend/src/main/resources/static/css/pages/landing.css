@@ -1,6 +1,6 @@
-@import url('https://fonts.googleapis.com/css2?family=Bitter:wght@400..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Racing+Sans+One&display=swap');
 * { margin:0; padding:0; box-sizing:border-box; }
-body.landing-page { min-height:100vh; display:flex; flex-direction:column; background:linear-gradient(180deg,#fafbfc 0%,#eceff2 100%); font-family:'Bitter',sans-serif; color:var(--text-primary); }
+body.landing-page { min-height:100vh; display:flex; flex-direction:column; background:linear-gradient(180deg,#fafbfc 0%,#eceff2 100%); font-family:'Racing Sans One',sans-serif; color:var(--text-primary); }
 .landing-page .content { flex:1; padding:32px 60px 48px; display:grid; grid-template-columns:1.1fr .9fr; gap:40px; align-items:center; }
 .landing-page .left { display:flex; flex-direction:column; gap:18px; }
 .landing-page .eyebrow { display:inline-flex; width:max-content; padding:8px 12px; background:var(--accent-soft); color:#6f3408; border-radius:999px; font-size:13px; font-weight:700; }
