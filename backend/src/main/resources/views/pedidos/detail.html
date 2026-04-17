@@ -82,7 +82,7 @@
             <p class="form-helper" th:if="${cliente.cliente}">Neste protótipo, o pagamento é apenas uma confirmação manual de status.</p>
             <p class="form-helper" th:if="${cliente.banco}">Como banco agente, você confirma a conclusão financeira do pedido.</p>
             <form class="payment-form" th:action="@{/pedidos/{id}/confirmar-pagamento(id=${pedido.id})}" method="post">
-                <div class="form-group"><label>Valor pago</label><input type="number" name="valorPago" step="0.01" min="0.01" required></div>
+                <div class="form-group"><label>Valor pago</label><input type="number" name="valorPago" step="0.01" min="0.01" inputmode="decimal" required><p class="form-helper">Valor deve ser maior que zero.</p></div>
                 <button class="button-primary" type="submit">Confirmar pagamento</button>
             </form>
         </section>
@@ -116,7 +116,7 @@
             <form class="cliente-form compact-form" th:action="@{/banco/pedidos/{id}/credito(id=${pedido.id})}" method="post">
                 <div class="form-grid page-form-grid">
                     <div class="form-group"><label>Número de referência</label><input type="text" name="numeroReferencia" maxlength="50" th:value="${contratoCreditoForm.numeroReferencia}" required></div>
-                    <div class="form-group"><label>Valor do crédito</label><input type="number" name="valorCredito" step="0.01" min="0.01" th:value="${contratoCreditoForm.valorCredito}" required></div>
+                    <div class="form-group"><label>Valor do crédito</label><input type="number" name="valorCredito" step="0.01" min="0.01" max="999999999999.99" inputmode="decimal" th:value="${contratoCreditoForm.valorCredito}" required><p class="form-helper">Valor entre 0,01 e 999999999999,99.</p></div>
                     <div class="form-group form-group-full"><label>Observação do crédito</label><textarea name="observacao" rows="3" maxlength="500" th:text="${contratoCreditoForm.observacao}"></textarea></div>
                 </div>
                 <button class="button-primary" type="submit">Salvar contrato de crédito</button>

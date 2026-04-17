@@ -12,7 +12,7 @@
         <form th:action="@{/login}" method="post">
           <div class="form-group">
             <label>E-mail</label>
-            <input type="email" name="email" placeholder="seu@email.com" required>
+            <input type="email" name="email" placeholder="seu@email.com" maxlength="150" required>
           </div>
           <div class="form-group">
             <label>Senha</label>
@@ -30,31 +30,33 @@
           <div class="form-grid">
             <div class="form-group">
               <label>Nome completo</label>
-              <input type="text" name="nome" placeholder="Felipe Parreiras" required>
+              <input type="text" name="nome" placeholder="Felipe Parreiras" maxlength="150" required>
             </div>
             <div class="form-group">
               <label>E-mail</label>
-              <input type="email" name="email" placeholder="seu@email.com" required>
+              <input type="email" name="email" placeholder="seu@email.com" maxlength="150" required>
             </div>
             <div class="form-group">
               <label>CPF</label>
-              <input type="text" name="cpf" placeholder="16055164655" required>
+              <input type="text" name="cpf" placeholder="16055164655" inputmode="numeric" pattern="\d{11}" minlength="11" maxlength="11" title="Informe 11 dígitos numéricos" required>
+              <p class="form-helper">Use apenas números (11 dígitos).</p>
             </div>
             <div class="form-group">
               <label>RG</label>
-              <input type="text" name="rg" placeholder="MG-12.345.678" required>
+              <input type="text" name="rg" placeholder="MG-12.345.678" maxlength="20" required>
             </div>
             <div class="form-group form-group-full">
               <label>Profissão</label>
-              <input type="text" name="profissao" placeholder="Engenheiro de Software" required>
+              <input type="text" name="profissao" placeholder="Engenheiro de Software" maxlength="100" required>
             </div>
             <div class="form-group form-group-full">
               <label>Endereço (opcional)</label>
-              <input type="text" name="endereco" placeholder="Rua, número, bairro, cidade">
+              <input type="text" name="endereco" placeholder="Rua, número, bairro, cidade" maxlength="255">
             </div>
             <div class="form-group form-group-full">
               <label>Senha</label>
               <input type="password" name="senha" placeholder="••••••••" required>
+              <p class="form-helper">Informe uma senha para criar sua conta.</p>
             </div>
           </div>
           <button type="submit" class="submit-btn">Criar conta</button>
