@@ -26,6 +26,7 @@ public class PedidoStatusDto {
     private boolean podeCancelar;
     private boolean finalizado;
     private boolean cancelado;
+    private Boolean parecerFinanceiroFavoravel;
     private String parecerFinanceiroDescricao;
     private String parecerFinanceiroObservacao;
     private String dataParecerFinanceiroFormatada;
@@ -78,6 +79,8 @@ public class PedidoStatusDto {
     public void setFinalizado(boolean finalizado) { this.finalizado = finalizado; }
     public boolean isCancelado() { return cancelado; }
     public void setCancelado(boolean cancelado) { this.cancelado = cancelado; }
+    public Boolean getParecerFinanceiroFavoravel() { return parecerFinanceiroFavoravel; }
+    public void setParecerFinanceiroFavoravel(Boolean parecerFinanceiroFavoravel) { this.parecerFinanceiroFavoravel = parecerFinanceiroFavoravel; }
     public String getParecerFinanceiroDescricao() { return parecerFinanceiroDescricao; }
     public void setParecerFinanceiroDescricao(String parecerFinanceiroDescricao) { this.parecerFinanceiroDescricao = parecerFinanceiroDescricao; }
     public String getParecerFinanceiroObservacao() { return parecerFinanceiroObservacao; }

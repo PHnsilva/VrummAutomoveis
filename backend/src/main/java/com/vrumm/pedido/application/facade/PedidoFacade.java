@@ -92,6 +92,10 @@ public class PedidoFacade {
         pedidoCommandUseCase.confirmarPagamentoComoBanco(pedidoId, valorPago);
     }
 
+    public void confirmarPagamentoComoEmpresa(Long pedidoId, BigDecimal valorPago) {
+        pedidoCommandUseCase.confirmarPagamentoComoEmpresa(pedidoId, valorPago);
+    }
+
     public void recusarPedidoComoEmpresa(Long pedidoId) {
         pedidoCommandUseCase.recusarPedidoComoEmpresa(pedidoId);
     }

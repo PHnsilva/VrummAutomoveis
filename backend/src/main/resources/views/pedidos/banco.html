@@ -11,7 +11,7 @@
             <div>
                 <span class="eyebrow">Banco</span>
                 <h1>Painel financeiro de pedidos</h1>
-                <p class="form-helper">O banco avalia financeiramente os pedidos, confirma pagamentos e registra contratos de crédito.</p>
+                <p class="form-helper">O banco analisa financeiramente os pedidos, libera a etapa de pagamento para o cliente e registra contratos de crédito.</p>
             </div>
             <div class="header-actions">
                 <a class="button-secondary" th:href="@{/perfil}">Meu perfil</a>
@@ -61,7 +61,7 @@
                         <div class="table-muted" th:text="${item.possuiContratoCredito ? item.numeroReferenciaCredito : 'Sem referência'}">Referência</div>
                     </td>
                     <td>
-                        <a class="button-secondary small" th:href="@{/banco/pedidos/{id}(id=${item.id})}">Detalhes financeiros</a>
+                        <a class="button-secondary small" th:href="@{/pedidos/{id}(id=${item.id})}">Detalhes financeiros</a>
                     </td>
                 </tr>
                 </tbody>

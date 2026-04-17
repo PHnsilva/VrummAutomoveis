@@ -237,8 +237,7 @@ public class PedidoAluguel {
         setParecerFinanceiroFavoravel(favoravel);
         setParecerFinanceiroObservacao(observacao);
         setDataParecerFinanceiro(LocalDateTime.now());
-        if (!favoravel)
-            setStatus(PedidoStatus.RECUSADO);
+        setStatus(favoravel ? PedidoStatus.AGUARDANDO_PAGAMENTO : PedidoStatus.RECUSADO);
     }
 
     public void finalizar(BigDecimal valorPago) {
@@ -246,25 +245,31 @@ public class PedidoAluguel {
             throw new IllegalStateException("Pedido não está aguardando pagamento");
         if (valorPago == null || valorPago.signum() <= 0)
             throw new IllegalArgumentException("Informe um valor pago maior que zero");
+        if (valorEntrada == null || valorEntrada.signum() <= 0)
+            throw new IllegalStateException("Pedido não possui valor de entrada definido para pagamento");
+        if (valorPago.compareTo(valorEntrada) != 0)
+            throw new IllegalArgumentException("O valor informado está diferente do valor de entrada do pedido");
         setValorPago(valorPago);
         setStatus(PedidoStatus.FINALIZADO);
     }
 
     public boolean podeEditar() {
-        return status == PedidoStatus.AGUARDANDO_PAGAMENTO;
+        return status == PedidoStatus.AGUARDANDO_ANALISE_FINANCEIRA;
     }
 
     public boolean podeCancelar() {
-        return status == PedidoStatus.AGUARDANDO_PAGAMENTO;
+        return status == PedidoStatus.AGUARDANDO_ANALISE_FINANCEIRA
+                || status == PedidoStatus.AGUARDANDO_PAGAMENTO;
     }
 
     public boolean podeSerRecusado() {
-        return status == PedidoStatus.AGUARDANDO_PAGAMENTO;
+        return status == PedidoStatus.AGUARDANDO_ANALISE_FINANCEIRA
+                || status == PedidoStatus.AGUARDANDO_PAGAMENTO;
     }
 
     public boolean podeConfirmarPagamento() {
         return status == PedidoStatus.AGUARDANDO_PAGAMENTO
-                && (parecerFinanceiroFavoravel == null || Boolean.TRUE.equals(parecerFinanceiroFavoravel));
+                && Boolean.TRUE.equals(parecerFinanceiroFavoravel);
     }
 
     @Transient

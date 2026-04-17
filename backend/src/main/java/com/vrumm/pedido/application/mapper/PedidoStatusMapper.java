@@ -63,6 +63,7 @@ public class PedidoStatusMapper {
         dto.setPodeCancelar(pedido.podeCancelar());
         dto.setFinalizado(pedido.getStatus() == PedidoStatus.FINALIZADO);
         dto.setCancelado(pedido.getStatus() == PedidoStatus.CANCELADO);
+        dto.setParecerFinanceiroFavoravel(pedido.getParecerFinanceiroFavoravel());
         dto.setParecerFinanceiroDescricao(formatarParecerFinanceiro(pedido.getParecerFinanceiroFavoravel()));
         dto.setParecerFinanceiroObservacao(pedido.getParecerFinanceiroObservacao());
         dto.setDataParecerFinanceiroFormatada(formatarDataHora(pedido.getDataParecerFinanceiro()));

@@ -1,6 +1,7 @@
 package com.vrumm.pedido.domain.model;
 
 public enum PedidoStatus {
+    AGUARDANDO_ANALISE_FINANCEIRA("Aguardando análise financeira", "status-badge status-badge--warning"),
     AGUARDANDO_PAGAMENTO("Aguardando pagamento", "status-badge status-badge--info"),
     FINALIZADO("Finalizado", "status-badge status-badge--success"),
     RECUSADO("Recusado", "status-badge status-badge--danger"),
@@ -23,6 +24,6 @@ public enum PedidoStatus {
     }
 
     public static PedidoStatus statusInicial() {
-        return AGUARDANDO_PAGAMENTO;
+        return AGUARDANDO_ANALISE_FINANCEIRA;
     }
 }

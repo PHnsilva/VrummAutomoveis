@@ -72,6 +72,10 @@ public class PedidoCommandUseCase {
         confirmarPagamento(pedidoDomainSupport.buscarPedido(pedidoId), valorPago);
     }
 
+    public void confirmarPagamentoComoEmpresa(Long pedidoId, BigDecimal valorPago) {
+        confirmarPagamento(pedidoDomainSupport.buscarPedido(pedidoId), valorPago);
+    }
+
     public void recusarPedidoComoEmpresa(Long pedidoId) {
         PedidoAluguel pedido = pedidoDomainSupport.buscarPedido(pedidoId);
         pedido.recusar();

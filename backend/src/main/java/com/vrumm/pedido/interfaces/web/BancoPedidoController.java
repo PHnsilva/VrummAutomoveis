@@ -1,5 +1,6 @@
 package com.vrumm.pedido.interfaces.web;
 
+import com.vrumm.agente.infrastructure.persistence.BancoRepository;
 import com.vrumm.auth.application.facade.AuthSessionFacade;
 import com.vrumm.cliente.domain.model.Cliente;
 import com.vrumm.pedido.application.dto.ContratoCreditoForm;
@@ -30,10 +31,12 @@ import java.util.Optional;
 public class BancoPedidoController {
     private final PedidoFacade pedidoFacade;
     private final AuthSessionFacade authSessionFacade;
+    private final BancoRepository bancoRepository;
 
-    public BancoPedidoController(PedidoFacade pedidoFacade, AuthSessionFacade authSessionFacade) {
+    public BancoPedidoController(PedidoFacade pedidoFacade, AuthSessionFacade authSessionFacade, BancoRepository bancoRepository) {
         this.pedidoFacade = pedidoFacade;
         this.authSessionFacade = authSessionFacade;
+        this.bancoRepository = bancoRepository;
     }
 
     @Get
@@ -55,6 +58,14 @@ public class BancoPedidoController {
         return HttpResponse.ok(new ModelAndView<>("pedidos/banco", model));
     }
 
+    @Get("/{id}")
+    public HttpResponse<?> detalhar(@CookieValue(value = AuthSessionFacade.AUTH_COOKIE) Optional<Long> clienteId,
+                                    @PathVariable Long id) {
+        Optional<Cliente> banco = getBanco(clienteId);
+        if (banco.isEmpty()) return HttpResponse.seeOther(URI.create("/perfil"));
+        return HttpResponse.seeOther(URI.create("/pedidos/" + id));
+    }
+
     @Post("/{id}/avaliar")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public HttpResponse<?> avaliar(@CookieValue(value = AuthSessionFacade.AUTH_COOKIE) Optional<Long> clienteId,
@@ -63,7 +74,7 @@ public class BancoPedidoController {
         Optional<Cliente> banco = getBanco(clienteId);
         if (banco.isEmpty()) return HttpResponse.seeOther(URI.create("/perfil"));
         try {
-            pedidoFacade.avaliarFinanceiramente(id, banco.get().getBancoId(), form);
+            pedidoFacade.avaliarFinanceiramente(id, resolverBancoId(banco.get()), form);
             return HttpResponse.seeOther(URI.create("/pedidos/" + id + "?sucesso=avaliacao"));
         } catch (IllegalArgumentException | IllegalStateException e) {
             return HttpResponse.seeOther(URI.create("/pedidos/" + id + "?erro=avaliacao"));
@@ -78,11 +89,20 @@ public class BancoPedidoController {
         Optional<Cliente> banco = getBanco(clienteId);
         if (banco.isEmpty()) return HttpResponse.seeOther(URI.create("/perfil"));
         try {
-            pedidoFacade.salvarContratoCredito(id, banco.get().getBancoId(), form);
+            pedidoFacade.salvarContratoCredito(id, resolverBancoId(banco.get()), form);
             return HttpResponse.seeOther(URI.create("/pedidos/" + id + "?sucesso=credito"));
         } catch (IllegalArgumentException | IllegalStateException e) {
             return HttpResponse.seeOther(URI.create("/pedidos/" + id + "?erro=credito"));
         }
+    }
+
+
+    private Long resolverBancoId(Cliente banco) {
+        if (banco.getBancoId() != null) return banco.getBancoId();
+        return bancoRepository.findAll().stream()
+                .findFirst()
+                .map(com.vrumm.agente.domain.model.Banco::getId)
+                .orElseThrow(() -> new IllegalStateException("Nenhum banco cadastrado para vincular a avaliação financeira"));
     }
 
     private Optional<Cliente> getBanco(Optional<Long> clienteId) {
