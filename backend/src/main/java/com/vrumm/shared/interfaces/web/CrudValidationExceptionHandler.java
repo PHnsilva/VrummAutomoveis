@@ -24,6 +24,8 @@ public class CrudValidationExceptionHandler implements ExceptionHandler<Constrai
 
     private static final Pattern EDITAR_CLIENTE = Pattern.compile("^/clientes/(\\d+)/editar$");
     private static final String EDITAR_PERFIL = "/perfil/editar";
+    private static final String CADASTRO = "/cadastro";
+    private static final String LOGIN = "/login";
 
     @Override
     public HttpResponse<?> handle(HttpRequest request, ConstraintViolationException exception) {
@@ -45,6 +47,14 @@ public class CrudValidationExceptionHandler implements ExceptionHandler<Constrai
         if (EDITAR_PERFIL.equals(path)) {
             String encoded = URLEncoder.encode(finalMessage, StandardCharsets.UTF_8);
             return HttpResponse.seeOther(URI.create(EDITAR_PERFIL + "?erro=" + encoded));
+        }
+
+        if (CADASTRO.equals(path)) {
+            return HttpResponse.seeOther(URI.create("/?erro=cadastro"));
+        }
+
+        if (LOGIN.equals(path)) {
+            return HttpResponse.seeOther(URI.create("/?erro=login"));
         }
 
         if (!path.startsWith("/clientes")) {

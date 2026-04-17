@@ -3,9 +3,7 @@ package com.vrumm.cliente.application.dto;
 import com.vrumm.cliente.domain.model.Cliente;
 import io.micronaut.core.annotation.Introspected;
 import io.micronaut.serde.annotation.Serdeable;
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 @Introspected
@@ -17,12 +15,10 @@ public class PerfilForm {
     private String nome;
 
     @NotBlank(message = "E-mail é obrigatório")
-    @Email(message = "E-mail inválido")
     @Size(max = 150, message = "E-mail deve ter no máximo 150 caracteres")
     private String email;
 
     @NotBlank(message = "CPF é obrigatório")
-    @Pattern(regexp = "\\d{11}", message = "CPF deve conter 11 dígitos")
     private String cpf;
 
     @NotBlank(message = "RG é obrigatório")
