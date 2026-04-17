@@ -61,7 +61,7 @@
                         <div class="table-muted" th:text="${item.possuiContratoCredito ? item.numeroReferenciaCredito : 'Sem referência'}">Referência</div>
                     </td>
                     <td>
-                        <a class="button-secondary small" th:href="@{/pedidos/{id}(id=${item.id})}">Detalhes financeiros</a>
+                        <a class="button-secondary small" th:href="@{/banco/pedidos/{id}(id=${item.id})}">Detalhes financeiros</a>
                     </td>
                 </tr>
                 </tbody>
