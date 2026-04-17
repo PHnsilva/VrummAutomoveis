@@ -290,13 +290,9 @@ Ainda assim, a base arquitetural atual é sólida para continuar evoluindo sem r
 │   │   ├── pedidos.png
 │   │   └── detalhes-pedido.png
 │   ├── 04-empresa/                 # Painel operacional da empresa
-│   │   ├── painel-empresa.png
-│   │   └── contrato-operacional.png
-│   ├── 05-banco/                   # Painel financeiro do banco
-│   │   ├── painel-banco.png
-│   │   └── contrato-credito.png
-│   └── 06-swagger/                 # Documentação e endpoints
-│       └── swagger-ui.png
+│   │   └── painel-empresa.png
+│   └── 05-banco/                   # Painel financeiro do banco
+│       └── painel-banco.png
 ```
 
 #### Landing page
@@ -320,17 +316,8 @@ Ainda assim, a base arquitetural atual é sólida para continuar evoluindo sem r
 #### Painel da empresa
 ![Painel da empresa](docs/apresentacao/telas/04-empresa/painel-empresa.png)
 
-#### Contrato operacional
-![Contrato operacional](docs/apresentacao/telas/04-empresa/contrato-operacional.png)
-
 #### Painel do banco
 ![Painel do banco](docs/apresentacao/telas/05-banco/painel-banco.png)
-
-#### Contrato de crédito
-![Contrato de crédito](docs/apresentacao/telas/05-banco/contrato-credito.png)
-
-#### Swagger UI
-![Swagger UI](docs/apresentacao/telas/06-swagger/swagger-ui.png)
 
 ---
 
