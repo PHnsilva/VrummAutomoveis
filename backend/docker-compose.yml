@@ -1,0 +1,34 @@
+services:
+  db:
+    image: postgres:16
+    container_name: vrumm-postgres
+    environment:
+      POSTGRES_DB: vrumm_automoveis
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+    ports:
+      - "5432:5432"
+    volumes:
+      - vrumm_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d vrumm_automoveis"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  app:
+    build: .
+    container_name: vrumm-app
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      PORT: 8080
+      DATASOURCES_DEFAULT_URL: jdbc:postgresql://db:5432/vrumm_automoveis
+      DATASOURCES_DEFAULT_USERNAME: admin
+      DATASOURCES_DEFAULT_PASSWORD: admin
+    ports:
+      - "8080:8080"
+
+volumes:
+  vrumm_postgres_data:
