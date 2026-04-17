@@ -4,15 +4,12 @@ import com.vrumm.contrato.domain.model.TipoContrato;
 import com.vrumm.contrato.domain.model.TipoProprietario;
 import io.micronaut.core.annotation.Introspected;
 import io.micronaut.serde.annotation.Serdeable;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 @Introspected
 @Serdeable
 public class ContratoForm {
-    @NotNull
     private TipoContrato tipoContrato;
-    @NotNull
     private TipoProprietario tipoProprietario;
     @Size(max = 500)
     private String observacao;

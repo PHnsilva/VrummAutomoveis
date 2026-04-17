@@ -121,6 +121,9 @@ public class PedidoController {
         model.put("contratoCreditoForm", pedidoFacade.buscarContratoCreditoForm(id).orElse(new ContratoCreditoForm()));
         model.put("tiposContrato", TipoContrato.values());
         model.put("tiposProprietario", TipoProprietario.values());
+        model.put("perfilCliente", autenticado.get().isCliente());
+        model.put("perfilEmpresa", autenticado.get().isEmpresa());
+        model.put("perfilBanco", autenticado.get().isBanco());
         model.put("sucesso", mapearSucesso(sucesso));
         model.put("erro", mapearErro(erro));
         return HttpResponse.ok(new ModelAndView<>("pedidos/detail", model));
@@ -197,12 +200,14 @@ public class PedidoController {
         try {
             if (autenticado.get().isBanco()) {
                 pedidoFacade.confirmarPagamentoComoBanco(id, form.getValorPago());
+            } else if (autenticado.get().isEmpresa()) {
+                pedidoFacade.confirmarPagamentoComoEmpresa(id, form.getValorPago());
             } else {
                 pedidoFacade.confirmarPagamentoDoCliente(autenticado.get().getId(), id, form.getValorPago());
             }
             return HttpResponse.seeOther(URI.create("/pedidos/" + id + "?sucesso=pagamento"));
         } catch (IllegalArgumentException | IllegalStateException e) {
-            return HttpResponse.seeOther(URI.create("/pedidos/" + id + "?erro=pagamento"));
+            return HttpResponse.seeOther(URI.create("/pedidos/" + id + "?erro=" + mapearErroPagamento(e)));
         }
     }
 
@@ -238,7 +243,17 @@ public class PedidoController {
         return null;
     }
 
+    private String mapearErroPagamento(RuntimeException e) {
+        String mensagem = e.getMessage();
+        if (mensagem == null) return "pagamento";
+        if (mensagem.contains("valor de entrada do pedido")) return "pagamento-valor";
+        if (mensagem.contains("não possui valor de entrada definido")) return "pagamento-sem-entrada";
+        return "pagamento";
+    }
+
     private String mapearErro(Optional<String> erro) {
+        if (erro.filter("pagamento-valor"::equals).isPresent()) return "O valor informado deve ser igual ao valor de entrada do pedido.";
+        if (erro.filter("pagamento-sem-entrada"::equals).isPresent()) return "Este pedido não possui valor de entrada definido para pagamento.";
         if (erro.filter("pagamento"::equals).isPresent()) return "Não foi possível confirmar o pagamento deste pedido.";
         if (erro.filter("cancelamento"::equals).isPresent()) return "Não foi possível cancelar este pedido.";
         if (erro.filter("contrato"::equals).isPresent()) return "Não foi possível registrar o contrato deste pedido.";

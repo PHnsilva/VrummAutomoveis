@@ -1,6 +1,7 @@
 package com.vrumm.pedido.interfaces.web;
 
 import com.vrumm.auth.application.facade.AuthSessionFacade;
+import com.vrumm.contrato.domain.model.TipoProprietario;
 import com.vrumm.cliente.domain.model.Cliente;
 import com.vrumm.pedido.application.dto.ContratoForm;
 import com.vrumm.pedido.application.facade.PedidoFacade;
@@ -61,6 +62,10 @@ public class EmpresaPedidoController {
                                           @Body @Valid ContratoForm form) {
         if (getEmpresa(clienteId).isEmpty()) return HttpResponse.seeOther(URI.create("/perfil"));
         try {
+            if (form.getTipoContrato() == null) {
+                return HttpResponse.seeOther(URI.create("/pedidos/" + id + "?sucesso=contrato"));
+            }
+            form.setTipoProprietario(TipoProprietario.EMPRESA);
             pedidoFacade.salvarContrato(id, form);
             return HttpResponse.seeOther(URI.create("/pedidos/" + id + "?sucesso=contrato"));
         } catch (IllegalArgumentException | IllegalStateException e) {

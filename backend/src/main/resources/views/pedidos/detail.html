@@ -25,7 +25,11 @@
 
         <div class="status-hero">
             <span th:class="${pedido.statusBadgeClass}" th:text="${pedido.statusDescricao}">Aguardando pagamento</span>
-            <p class="status-helper">Fluxo atual: Aguardando pagamento → Finalizado, Cancelado ou Recusado.</p>
+            <p class="status-helper" th:if="${pedido.statusCodigo == 'AGUARDANDO_ANALISE_FINANCEIRA'}">Fluxo atual: aguardando análise financeira do banco.</p>
+            <p class="status-helper" th:if="${pedido.statusCodigo == 'AGUARDANDO_PAGAMENTO'}">Fluxo atual: parecer favorável registrado. O cliente já pode concluir o pagamento.</p>
+            <p class="status-helper" th:if="${pedido.statusCodigo == 'FINALIZADO'}">Fluxo atual: pedido concluído com pagamento confirmado.</p>
+            <p class="status-helper" th:if="${pedido.statusCodigo == 'RECUSADO'}">Fluxo atual: pedido recusado após análise operacional ou financeira.</p>
+            <p class="status-helper" th:if="${pedido.statusCodigo == 'CANCELADO'}">Fluxo atual: pedido cancelado antes da conclusão.</p>
         </div>
 
         <div class="detail-grid">
@@ -48,27 +52,6 @@
             </div>
         </section>
 
-        <section class="detail-section">
-            <h2>Contrato operacional</h2>
-            <div class="detail-grid" th:if="${pedido.possuiContrato}">
-                <div class="detail-item"><span class="detail-label">Tipo do contrato</span><strong th:text="${pedido.tipoContratoDescricao}">Tipo</strong></div>
-                <div class="detail-item"><span class="detail-label">Propriedade do automóvel</span><strong th:text="${pedido.tipoProprietarioDescricao}">Propriedade</strong></div>
-                <div class="detail-item detail-item-full"><span class="detail-label">Observação do contrato</span><p th:text="${pedido.observacaoContrato != null ? pedido.observacaoContrato : 'Nenhuma observação contratual registrada.'}">Sem observação.</p></div>
-            </div>
-            <p class="form-helper" th:if="${!pedido.possuiContrato}">Nenhum contrato operacional foi registrado para este pedido.</p>
-        </section>
-
-        <section class="detail-section">
-            <h2>Contrato de crédito</h2>
-            <div class="detail-grid" th:if="${pedido.possuiContratoCredito}">
-                <div class="detail-item"><span class="detail-label">Banco do crédito</span><strong th:text="${pedido.bancoCreditoNome}">Banco</strong></div>
-                <div class="detail-item"><span class="detail-label">Referência</span><strong th:text="${pedido.numeroReferenciaCredito}">REF</strong></div>
-                <div class="detail-item"><span class="detail-label">Valor do crédito</span><strong th:text="${pedido.valorCreditoFormatado}">R$ 0,00</strong></div>
-                <div class="detail-item detail-item-full"><span class="detail-label">Observação do crédito</span><p th:text="${pedido.observacaoCredito != null ? pedido.observacaoCredito : 'Nenhuma observação de crédito registrada.'}">Sem observação.</p></div>
-            </div>
-            <p class="form-helper" th:if="${!pedido.possuiContratoCredito}">Nenhum contrato de crédito foi registrado para este pedido.</p>
-        </section>
-
         <section class="detail-section" th:if="${perfilCliente and pedido.podeEditar}">
             <h2>Ações do cliente</h2>
             <div class="action-row">
@@ -77,12 +60,18 @@
             </div>
         </section>
 
-        <section class="payment-box" th:if="${pedido.podeConfirmarPagamento and (perfilCliente or perfilBanco)}">
-            <h2 th:text="${perfilBanco} ? 'Confirmar pagamento no banco' : 'Confirmar pagamento'">Confirmar pagamento</h2>
-            <p class="form-helper" th:if="${perfilCliente}">Neste protótipo, o pagamento é apenas uma confirmação manual de status.</p>
+        <section class="detail-section" th:if="${perfilCliente and pedido.statusCodigo == 'AGUARDANDO_ANALISE_FINANCEIRA'}">
+            <h2>Etapa financeira pendente</h2>
+            <p class="form-helper">O banco ainda precisa registrar um parecer financeiro favorável para liberar a conclusão do pagamento.</p>
+        </section>
+
+        <section class="payment-box" th:if="${pedido.podeConfirmarPagamento and (perfilCliente or perfilBanco or perfilEmpresa)}">
+            <h2 th:text="${perfilBanco} ? 'Confirmar pagamento no banco' : (${perfilEmpresa} ? 'Confirmar pagamento no painel da empresa' : 'Confirmar pagamento')">Confirmar pagamento</h2>
+            <p class="form-helper" th:if="${perfilCliente}">O pagamento só fica disponível após parecer financeiro favorável do banco. Neste protótipo, a confirmação é manual.</p>
             <p class="form-helper" th:if="${perfilBanco}">Como banco agente, você confirma a conclusão financeira do pedido.</p>
+            <p class="form-helper" th:if="${perfilEmpresa}">Como administrador da empresa, você também pode concluir manualmente o pagamento deste pedido.</p>
             <form class="payment-form" th:action="@{/pedidos/{id}/confirmar-pagamento(id=${pedido.id})}" method="post">
-                <div class="form-group"><label>Valor pago</label><input type="number" name="valorPago" step="0.01" min="0.01" inputmode="decimal" required><p class="form-helper">Valor deve ser maior que zero.</p></div>
+                <div class="form-group"><label>Valor pago</label><input type="number" name="valorPago" step="0.01" min="0.01" inputmode="decimal" required><p class="form-helper">O valor deve ser exatamente igual à entrada informada no pedido: <strong th:text="${pedido.valorEntradaFormatado}">R$ 0,00</strong>.</p></div>
                 <button class="button-primary" type="submit">Confirmar pagamento</button>
             </form>
         </section>
@@ -96,16 +85,16 @@
             </div>
             <form class="cliente-form compact-form" th:action="@{/empresa/pedidos/{id}/contrato(id=${pedido.id})}" method="post">
                 <div class="form-grid page-form-grid">
-                    <div class="form-group"><label>Tipo do contrato</label><select name="tipoContrato" required><option th:each="tipo : ${tiposContrato}" th:value="${tipo.name()}" th:text="${tipo.descricao}" th:selected="${contratoForm.tipoContrato == tipo}">Tipo</option></select></div>
-                    <div class="form-group"><label>Proprietário do automóvel</label><select name="tipoProprietario" required><option th:each="tipo : ${tiposProprietario}" th:value="${tipo.name()}" th:text="${tipo.descricao}" th:selected="${contratoForm.tipoProprietario == tipo}">Proprietário</option></select></div>
+                    <div class="form-group"><label>Tipo do contrato</label><select name="tipoContrato"><option value="" th:selected="${contratoForm.tipoContrato == null}">Selecione</option><option th:each="tipo : ${tiposContrato}" th:value="${tipo.name()}" th:text="${tipo.descricao}" th:selected="${contratoForm.tipoContrato == tipo}">Tipo</option></select></div>
                     <div class="form-group form-group-full"><label>Observação do contrato</label><textarea name="observacao" rows="3" maxlength="500" th:text="${contratoForm.observacao}"></textarea></div>
                 </div>
                 <button class="button-primary" type="submit">Salvar contrato operacional</button>
             </form>
         </section>
 
-        <section class="detail-section" th:if="${perfilBanco}">
+        <section class="detail-section" th:if="${perfilBanco and pedido.statusCodigo != 'FINALIZADO' and pedido.statusCodigo != 'CANCELADO' and pedido.statusCodigo != 'RECUSADO'}">
             <h2>Ações financeiras do banco</h2>
+            <p class="form-helper">O cliente só pode concluir o pagamento depois que o banco registrar um parecer financeiro favorável.</p>
             <form class="cliente-form compact-form" th:action="@{/banco/pedidos/{id}/avaliar(id=${pedido.id})}" method="post">
                 <div class="form-grid page-form-grid">
                     <div class="form-group"><label>Parecer financeiro</label><select name="favoravel" required><option value="true">Favorável</option><option value="false">Desfavorável</option></select></div>
@@ -113,7 +102,7 @@
                 </div>
                 <button class="button-primary" type="submit">Registrar parecer financeiro</button>
             </form>
-            <form class="cliente-form compact-form" th:action="@{/banco/pedidos/{id}/credito(id=${pedido.id})}" method="post">
+            <form class="cliente-form compact-form" th:if="${pedido.parecerFinanceiroFavoravel}" th:action="@{/banco/pedidos/{id}/credito(id=${pedido.id})}" method="post">
                 <div class="form-grid page-form-grid">
                     <div class="form-group"><label>Número de referência</label><input type="text" name="numeroReferencia" maxlength="50" th:value="${contratoCreditoForm.numeroReferencia}" required></div>
                     <div class="form-group"><label>Valor do crédito</label><input type="number" name="valorCredito" step="0.01" min="0.01" max="999999999999.99" inputmode="decimal" th:value="${contratoCreditoForm.valorCredito}" required><p class="form-helper">Valor entre 0,01 e 999999999999,99.</p></div>
@@ -121,6 +110,7 @@
                 </div>
                 <button class="button-primary" type="submit">Salvar contrato de crédito</button>
             </form>
+            <p class="form-helper" th:if="${pedido.parecerFinanceiroFavoravel == null or !pedido.parecerFinanceiroFavoravel}">O contrato de crédito só pode ser registrado após parecer financeiro favorável.</p>
         </section>
     </section>
 </div>
