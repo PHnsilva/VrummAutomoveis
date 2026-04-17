@@ -23,27 +23,29 @@
             <div class="form-grid page-form-grid">
                 <div class="form-group">
                     <label>Nome</label>
-                    <input type="text" name="nome" th:value="${form.nome}" required>
+                    <input type="text" name="nome" th:value="${form.nome}" maxlength="150" required>
                 </div>
                 <div class="form-group">
                     <label>E-mail</label>
-                    <input type="email" name="email" th:value="${form.email}" required>
+                    <input type="email" name="email" th:value="${form.email}" maxlength="150" required>
                 </div>
                 <div class="form-group">
                     <label>CPF</label>
-                    <input type="text" name="cpf" th:value="${form.cpf}" required>
+                    <input type="text" name="cpf" th:value="${form.cpf}" inputmode="numeric" pattern="\d{11}" minlength="11" maxlength="11" title="Informe 11 dígitos numéricos" required>
+                    <p class="form-helper">Use apenas números (11 dígitos).</p>
                 </div>
                 <div class="form-group">
                     <label>RG</label>
-                    <input type="text" name="rg" th:value="${form.rg}" required>
+                    <input type="text" name="rg" th:value="${form.rg}" maxlength="20" required>
                 </div>
                 <div class="form-group form-group-full">
                     <label>Profissão</label>
-                    <input type="text" name="profissao" th:value="${form.profissao}" required>
+                    <input type="text" name="profissao" th:value="${form.profissao}" maxlength="100" required>
                 </div>
                 <div class="form-group form-group-full">
                     <label>Nova senha (opcional)</label>
-                    <input type="password" name="senha">
+                    <input type="password" name="senha" minlength="3" maxlength="100">
+                    <p class="form-helper">Se informar senha, use entre 3 e 100 caracteres.</p>
                 </div>
             </div>
             <button class="button-primary" type="submit">Salvar meu perfil</button>

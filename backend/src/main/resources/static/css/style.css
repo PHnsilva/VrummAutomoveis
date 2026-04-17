@@ -23,6 +23,9 @@
   --info-bg:#e8eff7;
   --info-text:#244d78;
   --info-border:#b7d0ea;
+  --hint-bg:#f4f6f8;
+  --hint-text:#4f5968;
+  --hint-border:#cfd6de;
 }
 
 * { box-sizing:border-box; }
@@ -57,7 +60,10 @@ a { color:inherit; }
 .info-list div { display:grid; gap:6px; padding-bottom:12px; border-bottom:1px solid var(--border); }
 .info-list dt { color:var(--text-muted); font-size:14px; }
 .info-list dd { margin:0; font-weight:700; }
-.crud-wrapper { display:grid; gap:24px; }
+.crud-wrapper { display:grid; gap:24px; justify-items:center; }
+.pedido-form-wrapper {
+  display:block;
+}
 .card-header-row { display:flex; justify-content:space-between; align-items:flex-start; gap:16px; margin-bottom:20px; }
 .table-wrapper { overflow:auto; }
 table { width:100%; border-collapse:collapse; }
@@ -65,14 +71,32 @@ th, td { padding:14px 12px; border-bottom:1px solid var(--border); text-align:le
 th { color:var(--text-muted); font-size:14px; }
 .inline-actions { margin-top:0; }
 .inline-actions form { margin:0; }
-.form-card { max-width:900px; }
+.form-card { max-width:900px; width:min(900px, 100%); }
+.pedido-form-wrapper .form-card {
+  width:min(900px, 100%);
+  margin:0 auto;
+}
+.pedido-form-wrapper .cliente-form > .button-primary {
+  display:block;
+  margin-left:auto;
+}
 .page-form-grid { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:16px; }
 .form-group { display:flex; flex-direction:column; gap:8px; }
 .form-group-full { grid-column:1 / -1; }
 .form-group input, .form-group select, .form-group textarea { padding:12px 14px; border:1px solid var(--border); border-radius:14px; font-size:14px; font-family:'Bitter',sans-serif; background:var(--bg-surface); }
 .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline:none; border-color:var(--accent); box-shadow:0 0 0 3px rgba(255,106,0,.16); }
 .form-group textarea { resize:vertical; min-height:120px; }
-.form-helper { margin:0; color:var(--text-muted); }
+.form-helper {
+  margin:2px 0 0;
+  padding:7px 10px;
+  border:1px solid var(--hint-border);
+  border-left:3px solid var(--accent);
+  border-radius:10px;
+  background:var(--hint-bg);
+  color:var(--hint-text);
+  font-size:12px;
+  line-height:1.35;
+}
 .alert { margin-bottom:16px; padding:14px 16px; border-radius:16px; font-weight:600; }
 .alert-success { background:var(--success-bg); color:var(--success-text); border:1px solid var(--success-border); }
 .alert-error { background:var(--error-bg); color:var(--error-text); border:1px solid var(--error-border); }

@@ -22,55 +22,59 @@
             <div class="form-grid page-form-grid">
                 <div class="form-group">
                     <label>Nome</label>
-                    <input type="text" name="nome" th:value="${form.nome}" required>
+                    <input type="text" name="nome" th:value="${form.nome}" maxlength="150" required>
                 </div>
                 <div class="form-group">
                     <label>E-mail</label>
-                    <input type="email" name="email" th:value="${form.email}" required>
+                    <input type="email" name="email" th:value="${form.email}" maxlength="150" required>
                 </div>
                 <div class="form-group">
                     <label>CPF</label>
-                    <input type="text" name="cpf" th:value="${form.cpf}" required>
+                    <input type="text" name="cpf" th:value="${form.cpf}" inputmode="numeric" pattern="\d{11}" minlength="11" maxlength="11" title="Informe 11 dígitos numéricos" required>
+                    <p class="form-helper">Use apenas números (11 dígitos).</p>
                 </div>
                 <div class="form-group">
                     <label>RG</label>
-                    <input type="text" name="rg" th:value="${form.rg}" required>
+                    <input type="text" name="rg" th:value="${form.rg}" maxlength="20" required>
                 </div>
                 <div class="form-group form-group-full">
                     <label>Profissão</label>
-                    <input type="text" name="profissao" th:value="${form.profissao}" required>
+                    <input type="text" name="profissao" th:value="${form.profissao}" maxlength="100" required>
                 </div>
 
                 <div class="form-section-title form-group-full">Endereço</div>
                 <div class="form-group form-group-full">
                     <label>Endereço (opcional)</label>
-                    <input type="text" name="endereco" th:value="${form.endereco}">
+                    <input type="text" name="endereco" th:value="${form.endereco}" maxlength="255">
                 </div>
 
                 <div class="form-section-title form-group-full">Rendimentos (máximo 3)</div>
                 <div class="form-group">
                     <label>Empregadora 1</label>
-                    <input type="text" name="entidadeEmpregadora1" th:value="${form.entidadeEmpregadora1}">
+                    <input type="text" name="entidadeEmpregadora1" th:value="${form.entidadeEmpregadora1}" maxlength="120">
                 </div>
                 <div class="form-group">
                     <label>Rendimento mensal 1</label>
-                    <input type="number" name="valorRendimento1" step="0.01" min="0" th:value="${form.valorRendimento1}">
+                    <input type="number" name="valorRendimento1" step="0.01" min="0" inputmode="decimal" th:value="${form.valorRendimento1}">
+                    <p class="form-helper">Use valor positivo com até 2 casas decimais.</p>
                 </div>
                 <div class="form-group">
                     <label>Empregadora 2</label>
-                    <input type="text" name="entidadeEmpregadora2" th:value="${form.entidadeEmpregadora2}">
+                    <input type="text" name="entidadeEmpregadora2" th:value="${form.entidadeEmpregadora2}" maxlength="120">
                 </div>
                 <div class="form-group">
                     <label>Rendimento mensal 2</label>
-                    <input type="number" name="valorRendimento2" step="0.01" min="0" th:value="${form.valorRendimento2}">
+                    <input type="number" name="valorRendimento2" step="0.01" min="0" inputmode="decimal" th:value="${form.valorRendimento2}">
+                    <p class="form-helper">Use valor positivo com até 2 casas decimais.</p>
                 </div>
                 <div class="form-group">
                     <label>Empregadora 3</label>
-                    <input type="text" name="entidadeEmpregadora3" th:value="${form.entidadeEmpregadora3}">
+                    <input type="text" name="entidadeEmpregadora3" th:value="${form.entidadeEmpregadora3}" maxlength="120">
                 </div>
                 <div class="form-group">
                     <label>Rendimento mensal 3</label>
-                    <input type="number" name="valorRendimento3" step="0.01" min="0" th:value="${form.valorRendimento3}">
+                    <input type="number" name="valorRendimento3" step="0.01" min="0" inputmode="decimal" th:value="${form.valorRendimento3}">
+                    <p class="form-helper">Use valor positivo com até 2 casas decimais.</p>
                 </div>
 
                 <div class="form-group form-group-full">
