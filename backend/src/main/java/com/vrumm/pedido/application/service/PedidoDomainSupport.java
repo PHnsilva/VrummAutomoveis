@@ -11,6 +11,7 @@ import jakarta.inject.Singleton;
 import java.util.Comparator;
 import java.util.List;
 
+//review
 @Singleton
 public class PedidoDomainSupport {
 
