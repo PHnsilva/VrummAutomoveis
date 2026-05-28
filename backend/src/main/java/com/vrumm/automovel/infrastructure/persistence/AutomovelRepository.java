@@ -6,7 +6,7 @@ import io.micronaut.data.model.query.builder.sql.Dialect;
 import io.micronaut.data.repository.CrudRepository;
 
 import java.util.List;
-
+// review
 @JdbcRepository(dialect = Dialect.POSTGRES)
 public interface AutomovelRepository extends CrudRepository<Automovel, Long> {
 
