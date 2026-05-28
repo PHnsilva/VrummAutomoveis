@@ -11,7 +11,7 @@ import io.micronaut.data.model.DataType;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
+// review
 @Introspected
 @MappedEntity("cliente")
 public class Cliente {
