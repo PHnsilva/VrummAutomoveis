@@ -27,3 +27,4 @@ public class PasswordHasher {
         return hash(rawPassword).equals(hashedPassword);
     }
 }
+

@@ -62,3 +62,4 @@ public class AuthController {
                 .cookie(authSessionFacade.buildExpiredAuthCookie());
     }
 }
+

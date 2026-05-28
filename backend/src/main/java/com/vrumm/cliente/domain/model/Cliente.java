@@ -71,3 +71,4 @@ public class Cliente {
     public void adicionarRendimento(Rendimento rendimento) { if (rendimento == null) throw new IllegalArgumentException("Rendimento é obrigatório"); if (rendimentos.size() >= 3) throw new IllegalStateException("Cliente pode possuir no máximo 3 rendimentos"); rendimentos.add(rendimento); }
     public boolean podeSerRemovido(boolean possuiVinculosAtivos) { return !possuiVinculosAtivos; }
 }
+

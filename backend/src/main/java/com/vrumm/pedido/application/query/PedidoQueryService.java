@@ -103,3 +103,4 @@ public class PedidoQueryService {
         return StreamSupport.stream(pedidoRepository.findAll().spliterator(), false).toList();
     }
 }
+

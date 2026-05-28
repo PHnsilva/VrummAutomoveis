@@ -40,3 +40,4 @@ public class AuthSessionFacade {
                 .maxAge(0);
     }
 }
+
