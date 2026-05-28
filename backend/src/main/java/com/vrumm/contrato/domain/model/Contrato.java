@@ -37,3 +37,4 @@ public class Contrato {
     public void setDataCriacao(LocalDateTime dataCriacao) { if (dataCriacao == null) throw new IllegalArgumentException("Data do contrato é obrigatória"); this.dataCriacao = dataCriacao; }
     public void prepararNovoRegistro(Long pedidoId, TipoContrato tipoContrato, TipoProprietario tipoProprietario, String observacao) { setPedidoId(pedidoId); setTipoContrato(tipoContrato); setTipoProprietario(tipoProprietario); setObservacao(observacao); setDataCriacao(LocalDateTime.now()); }
 }
+

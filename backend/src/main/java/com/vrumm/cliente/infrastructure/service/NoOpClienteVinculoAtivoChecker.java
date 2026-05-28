@@ -18,3 +18,4 @@ public class NoOpClienteVinculoAtivoChecker implements ClienteVinculoAtivoChecke
         return pedidoRepository.countByClienteId(clienteId) > 0;
     }
 }
+

@@ -27,3 +27,4 @@ public enum PedidoStatus {
         return AGUARDANDO_ANALISE_FINANCEIRA;
     }
 }
+

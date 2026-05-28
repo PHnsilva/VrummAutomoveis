@@ -5,3 +5,4 @@ package com.vrumm.shared.domain.model;
  */
 public class Banco {
 }
+

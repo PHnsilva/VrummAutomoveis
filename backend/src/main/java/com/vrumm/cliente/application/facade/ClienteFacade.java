@@ -108,3 +108,4 @@ public class ClienteFacade {
     private void validarSenhaObrigatoria(String senha) { if (senha == null || senha.isBlank()) throw new IllegalArgumentException("Senha é obrigatória"); }
     private String normalizarEmail(String email) { return email.trim().toLowerCase(); }
 }
+
