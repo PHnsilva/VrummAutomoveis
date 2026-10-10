@@ -8,8 +8,10 @@ Hoje a aplicação atende três contextos operacionais centrais — **cliente**,
 
 ## 🚧 Status do Projeto
 
-Protótipo acadêmico em desenvolvimento. O cookie `vrumm_cliente_id` contém o identificador do cliente; o código atual não implementa uma sessão opaca ou assinatura desse valor. O hash de senha usa SHA-256 sem salt. Essas limitações não permitem tratar a autenticação como pronta para produção.
-![Status](https://img.shields.io/badge/status-em%20desenvolvimento-007ec6?style=for-the-badge)
+Projeto acadêmico **concluído no escopo entregue**, com código e documentação mantidos para consulta e estudo. O resultado é um protótipo; eventuais correções e ampliações podem ser feitas posteriormente.
+
+O cookie `vrumm_cliente_id` contém o identificador do cliente; o código atual não implementa uma sessão opaca ou assinatura desse valor. O hash de senha usa SHA-256 sem salt. Essas limitações não permitem tratar a autenticação como pronta para produção.
+![Status](https://img.shields.io/badge/status-conclu%C3%ADdo-success?style=for-the-badge)
 ![Backend](https://img.shields.io/badge/backend-Java%2021%20%7C%20Micronaut%204.10.10-007ec6?style=for-the-badge)
 ![Views](https://img.shields.io/badge/views-Thymeleaf-007ec6?style=for-the-badge)
 ![Database](https://img.shields.io/badge/database-PostgreSQL-007ec6?style=for-the-badge)
