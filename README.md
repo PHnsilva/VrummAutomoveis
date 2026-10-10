@@ -2,11 +2,13 @@
 
 Sistema web para apoio ao fluxo de solicitação, análise e acompanhamento de pedidos de aluguel/financiamento de veículos. O projeto reúne, no mesmo backend, a interface web renderizada no servidor, a API HTTP para integrações e consumo programático, as regras de negócio dos módulos principais e a persistência em PostgreSQL.
 
-Hoje a aplicação atende três contextos operacionais centrais — **cliente**, **empresa** e **banco** — com autenticação por cookie de sessão, páginas em Thymeleaf, documentação OpenAPI/Swagger e migrações versionadas com Flyway.
+Hoje a aplicação atende três contextos operacionais centrais — **cliente**, **empresa** e **banco** — com identificação por cookie, páginas em Thymeleaf, documentação OpenAPI/Swagger e migrações versionadas com Flyway.
 
 ---
 
 ## 🚧 Status do Projeto
+
+Protótipo acadêmico em desenvolvimento. O cookie `vrumm_cliente_id` contém o identificador do cliente; o código atual não implementa uma sessão opaca ou assinatura desse valor. O hash de senha usa SHA-256 sem salt. Essas limitações não permitem tratar a autenticação como pronta para produção.
 ![Status](https://img.shields.io/badge/status-em%20desenvolvimento-007ec6?style=for-the-badge)
 ![Backend](https://img.shields.io/badge/backend-Java%2021%20%7C%20Micronaut%204.10.10-007ec6?style=for-the-badge)
 ![Views](https://img.shields.io/badge/views-Thymeleaf-007ec6?style=for-the-badge)
@@ -16,7 +18,10 @@ Hoje a aplicação atende três contextos operacionais centrais — **cliente**,
 ---
 
 ## 📚 Índice
+
 - [Deploy](#-deploy)
+- [Autores](#-autores)
+- [Licença](#-licença)
 - [Apresentação do Sistema](#-apresentação-do-sistema)
 - [Sobre o Projeto](#-sobre-o-projeto)
 - [Funcionalidades](#-funcionalidades)
@@ -35,10 +40,13 @@ Hoje a aplicação atende três contextos operacionais centrais — **cliente**,
 ---
 
 ## 🚀 Deploy
-- **Aplicação publicada:** [https://vrummautomoveis.onrender.com](https://vrummautomoveis.onrender.com)
+
+- **Endereço informado para demonstração:** [https://vrummautomoveis.onrender.com](https://vrummautomoveis.onrender.com). A disponibilidade do ambiente deve ser conferida ao acessar.
+
 ---
 
 ## 📝 Sobre o Projeto
+
 O **Vrumm Automóveis** centraliza o fluxo de cadastro, autenticação e gestão de pedidos ligados à operação de automóveis, incluindo cadastro de clientes, consulta de veículos, registro de solicitações, avaliação financeira, formalização contratual e acompanhamento do status do pedido.
 
 Diferente de uma API pura, este repositório entrega duas frentes no mesmo backend:
@@ -53,6 +61,7 @@ Na prática, o sistema funciona como um **monólito modular**, em que cada domí
 ## ✨ Funcionalidades
 
 ### Funcionalidades principais
+
 - cadastro e autenticação de usuários;
 - identificação do usuário autenticado por cookie de sessão;
 - gerenciamento de perfil do usuário autenticado;
@@ -65,11 +74,13 @@ Na prática, o sistema funciona como um **monólito modular**, em que cada domí
 - avaliação financeira do pedido pelo contexto bancário.
 
 ### Funcionalidades por contexto operacional
+
 - **Cliente:** cria pedidos, acompanha andamento, edita dados do perfil, confirma pagamento e consulta histórico próprio.
 - **Empresa:** acompanha pedidos operacionais, registra contrato e pode recusar solicitações.
 - **Banco:** acompanha pedidos sob análise financeira, registra parecer e contrato de crédito.
 
 ### Recursos técnicos já presentes
+
 - autenticação por cookie HTTP-only;
 - persistência em PostgreSQL;
 - migrações versionadas com Flyway;
@@ -82,6 +93,7 @@ Na prática, o sistema funciona como um **monólito modular**, em que cada domí
 ## 🛠 Tecnologias
 
 ### Stack principal
+
 - **Java 21**
 - **Micronaut 4.10.10**
 - **Micronaut Data JDBC**
@@ -95,6 +107,7 @@ Na prática, o sistema funciona como um **monólito modular**, em que cada domí
 - **Docker**
 
 ### Dependências e recursos relevantes
+
 - **HikariCP** para pool de conexões JDBC;
 - **Logback** para logging;
 - **JUnit 5 / Micronaut Test** para testes;
@@ -102,9 +115,10 @@ Na prática, o sistema funciona como um **monólito modular**, em que cada domí
 
 ---
 
-## 🏗️ Arquitetura
+## 🏗 Arquitetura
 
 ### Visão Geral
+
 O projeto adota uma arquitetura **monolítica modular**, organizada por domínio e por responsabilidade técnica. O sistema não está estruturado como frontend separado + backend separado; em vez disso, o backend concentra:
 
 - **controllers web** para páginas e formulários;
@@ -117,9 +131,11 @@ O projeto adota uma arquitetura **monolítica modular**, organizada por domínio
 Essa decisão é adequada ao estágio atual do projeto porque reduz complexidade operacional, facilita o desenvolvimento local e mantém a lógica centralizada em uma única aplicação.
 
 ### Estilo arquitetural adotado
+
 A base do projeto combina três ideias principais:
 
 #### 1. MVC na borda da aplicação
+
 A entrada HTTP é dividida entre:
 
 - **controllers web** (`interfaces/web`) para telas Thymeleaf;
@@ -136,9 +152,11 @@ Os controllers permanecem como ponto de entrada da requisição, cuidando de:
 Ou seja, o projeto usa **MVC de forma prática**, especialmente na camada web, sem empurrar regra de negócio para os controllers.
 
 #### 2. Façade na camada de aplicação
+
 A aplicação usa classes do tipo `Facade` como ponto de orquestração dos fluxos de negócio.
 
 Exemplos no código:
+
 - `ClienteFacade`
 - `AuthSessionFacade`
 - `PedidoFacade`
@@ -153,6 +171,7 @@ Essas classes funcionam como **porta de entrada da aplicação**, encapsulando o
 Essa composição melhora a legibilidade e reduz o acúmulo excessivo de responsabilidade em uma única classe.
 
 #### 3. DDD leve/modular
+
 O projeto não segue um DDD ortodoxo ou uma hexagonal pura, mas já adota elementos importantes de **Domain-Driven Design**:
 
 - organização por **domínio funcional**;
@@ -168,6 +187,7 @@ Na prática, o projeto hoje pode ser descrito como:
 Esse desenho é coerente com o estágio atual do sistema e oferece um bom equilíbrio entre simplicidade, manutenibilidade e possibilidade de evolução.
 
 ### Organização por Domínio
+
 A solução está estruturada principalmente em torno dos seguintes módulos:
 
 - `auth` → autenticação e sessão;
@@ -182,6 +202,7 @@ A solução está estruturada principalmente em torno dos seguintes módulos:
 Essa escolha melhora a coesão do código porque cada contexto do negócio concentra suas próprias classes de aplicação, domínio, interface e persistência.
 
 ### Organização interna dos módulos
+
 Cada módulo segue, em maior ou menor grau, a seguinte divisão:
 
 - `interfaces/web` → controllers de páginas, formulários e redirecionamentos;
@@ -198,17 +219,23 @@ Cada módulo segue, em maior ou menor grau, a seguinte divisão:
 Nem todos os módulos usam exatamente todas as subpastas, mas o desenho geral já aponta para uma arquitetura consistente.
 
 ### Fluxo geral da aplicação
+
 #### Fluxo web
+
 `Usuário -> Controller Web -> Facade -> UseCase/QueryService -> Repository -> PostgreSQL -> View Thymeleaf`
 
 #### Fluxo da API
+
 `Cliente HTTP -> Controller API -> Facade -> Domínio / Repositório -> PostgreSQL -> JSON`
 
 ### Exemplo prático: módulo de pedidos
+
 O módulo `pedido` é o coração operacional do sistema e também o melhor exemplo da arquitetura atual.
 
 #### Entrada
+
 Os controllers web (`PedidoController`, `EmpresaPedidoController`, `BancoPedidoController`) recebem ações como:
+
 - criar pedido;
 - editar pedido;
 - cancelar pedido;
@@ -218,16 +245,20 @@ Os controllers web (`PedidoController`, `EmpresaPedidoController`, `BancoPedidoC
 - registrar contrato de crédito.
 
 #### Aplicação
+
 Esses controllers delegam para `PedidoFacade`, que atua como fachada pública do módulo.
 
 A partir dela, o fluxo é distribuído entre:
+
 - `PedidoCommandUseCase` para comandos e mudanças de estado;
 - `PedidoQueryService` para leitura e montagem de resumo;
 - `PedidoDomainSupport` para validações e buscas auxiliares;
 - `PedidoStatusMapper` e `PedidoFormMapper` para transformação de dados.
 
 #### Domínio
+
 A entidade `PedidoAluguel` concentra o comportamento principal do pedido, com operações como:
+
 - criação da solicitação;
 - atualização;
 - cancelamento;
@@ -240,28 +271,36 @@ Esse ponto é importante: a regra de negócio mais importante não fica espalhad
 ### Decisões arquiteturais importantes
 
 #### Controllers enxutos
+
 Os controllers priorizam:
+
 - receber entrada;
 - validar a presença do usuário autenticado;
 - redirecionar ou responder;
 - delegar para a aplicação.
 
 #### Façades como contratos da aplicação
+
 As façades evitam que a interface converse diretamente com repositórios ou com múltiplas classes internas do domínio.
 
 #### Domínio com encapsulamento
+
 As entidades utilizam atributos encapsulados e métodos orientados ao negócio, reduzindo manipulação arbitrária de estado.
 
 #### DTOs e formulários separados do domínio
+
 A aplicação usa classes específicas para input/output, evitando expor diretamente o domínio à camada HTTP.
 
 #### Persistência isolada
+
 O acesso ao banco está concentrado em repositórios do Micronaut Data, mantendo a persistência fora dos controllers.
 
 #### Exceções padronizadas
+
 A pasta `shared/interfaces/api` centraliza handlers para exceções recorrentes, padronizando o retorno da API.
 
 ### Limites atuais da arquitetura
+
 O projeto já está em uma direção boa, mas ainda não é um DDD “forte” ou “puro”. Os principais pontos atuais são:
 
 - parte dos contratos de persistência ainda vive na infraestrutura, não no domínio;
@@ -273,10 +312,12 @@ Ainda assim, a base arquitetural atual é sólida para continuar evoluindo sem r
 
 ---
 
-## 🖼️ Apresentação do Sistema
+## 🖼 Apresentação do Sistema
+
 `docs/apresentacao/telas/`
 
 ### Estrutura de pastas das telas
+
 ```txt
 /docs/apresentacao/
 ├── telas/
@@ -296,44 +337,54 @@ Ainda assim, a base arquitetural atual é sólida para continuar evoluindo sem r
 ```
 
 #### Landing page
+
 ![Landing page](docs/apresentacao/telas/01-landing/landing.png)
 
 #### Login
+
 ![Tela de login](docs/apresentacao/telas/02-autenticacao/login.png)
 
 #### Cadastro
+
 ![Tela de cadastro](docs/apresentacao/telas/02-autenticacao/cadastro.png)
 
 #### Perfil do cliente
+
 ![Perfil do cliente](docs/apresentacao/telas/03-cliente/perfil.png)
 
 #### Área de pedidos do cliente
+
 ![Área de pedidos do cliente](docs/apresentacao/telas/03-cliente/pedidos.png)
 
 #### Detalhes do pedido
+
 ![Detalhes do pedido](docs/apresentacao/telas/03-cliente/detalhes-pedido.png)
 
 #### Painel da empresa
+
 ![Painel da empresa](docs/apresentacao/telas/04-empresa/painel-empresa.png)
 
 #### Painel do banco
+
 ![Painel do banco](docs/apresentacao/telas/05-banco/painel-banco.png)
 
 ---
 
 ## 🔐 Variáveis de Ambiente
-Atualmente, a configuração principal está em `src/main/resources/application.properties`, com suporte a valores vindos de variáveis de ambiente para facilitar execução local, Docker e deploy.
 
-| Variável / Propriedade | Obrigatória | Descrição | Exemplo |
-|---|---|---|---|
-| `PORT` | Não | Porta HTTP da aplicação | `8080` |
-| `DATASOURCES_DEFAULT_URL` | Sim | URL JDBC do PostgreSQL | `jdbc:postgresql://localhost:5432/vrumm_automoveis` |
-| `DATASOURCES_DEFAULT_USERNAME` | Sim | Usuário do banco | `admin` |
-| `DATASOURCES_DEFAULT_PASSWORD` | Sim | Senha do banco | `admin` |
-| `datasources.default.driver-class-name` | Sim | Driver JDBC | `org.postgresql.Driver` |
-| `flyway.datasources.default.enabled` | Sim | Habilita migrações Flyway | `true` |
+Atualmente, a configuração principal está em [`backend/src/main/resources/application.properties`](backend/src/main/resources/application.properties), com suporte a valores vindos de variáveis de ambiente para facilitar execução local, Docker e deploy.
+
+| Variável / Propriedade                  | Obrigatória | Descrição                 | Exemplo                                             |
+| --------------------------------------- | ----------- | ------------------------- | --------------------------------------------------- |
+| `PORT`                                  | Não         | Porta HTTP da aplicação   | `8080`                                              |
+| `DATASOURCES_DEFAULT_URL`               | Sim         | URL JDBC do PostgreSQL    | `jdbc:postgresql://localhost:5432/vrumm_automoveis` |
+| `DATASOURCES_DEFAULT_USERNAME`          | Sim         | Usuário do banco          | `admin`                                             |
+| `DATASOURCES_DEFAULT_PASSWORD`          | Sim         | Senha do banco            | `admin`                                             |
+| `datasources.default.driver-class-name` | Sim         | Driver JDBC               | `org.postgresql.Driver`                             |
+| `flyway.datasources.default.enabled`    | Sim         | Habilita migrações Flyway | `true`                                              |
 
 ### Exemplo mínimo de configuração
+
 ```properties
 micronaut.server.port=${PORT:8080}
 
@@ -351,11 +402,12 @@ flyway.datasources.default.locations=classpath:db/migration
 
 ---
 
-## ▶️ Como Rodar Localmente
+## ▶ Como Rodar Localmente
 
 ### Pré-requisitos
+
 - **Java 21**
-- **Maven** (`mvn`)
+- **Maven Wrapper** versionado em `backend/` (não exige Maven instalado separadamente)
 - **PostgreSQL** em execução
 - banco `vrumm_automoveis` criado ou configurado conforme sua instância
 
@@ -364,24 +416,27 @@ ou
 - **Docker**
 - **Docker Compose**
 
-### Opção 1: execução local com Maven
+### Opção 1: execução local com Maven Wrapper
+
+A partir de um clone limpo:
+
 ```bash
-cd backend
-mvn mn:run
+git clone https://github.com/PHnsilva/VrummAutomoveis.git
+cd VrummAutomoveis/backend
+./mvnw mn:run
 ```
 
-No Windows:
-```bash
-mvn mn:run
-```
+No PowerShell, dentro de `backend/`, use `.\mvnw.bat mn:run`. O PostgreSQL deve estar acessível; as migrações Flyway são aplicadas na inicialização.
 
 ### Opção 2: execução com Docker
+
 ```bash
 cd backend
 docker compose up --build
 ```
 
 ### Endereços úteis em desenvolvimento
+
 - aplicação web: `http://localhost:8080/`
 - Swagger UI: `http://localhost:8080/swagger-ui/`
 - arquivos OpenAPI: `http://localhost:8080/swagger/`
@@ -391,70 +446,81 @@ docker compose up --build
 ## 🧱 Build e Testes
 
 ### Build do projeto
+
 ```bash
 cd backend
-mvn clean package
+./mvnw clean package
 ```
 
 ### Execução de testes
+
 ```bash
-mvn test
+./mvnw test
 ```
 
 ### Build da imagem Docker
+
 ```bash
 cd backend
 docker build -t vrumm-backend .
 ```
 
+Os comandos de build e testes partem de `backend/`. No PowerShell, substitua `./mvnw` por `.\mvnw.bat`. Os testes Micronaut iniciam a aplicação e precisam de PostgreSQL acessível.
+
 ### Testes atualmente presentes
+
 - teste base da aplicação;
 - teste de controller da landing page.
+
+Esses dois testes não cobrem todo o fluxo de pedidos, autorização ou contratos.
 
 ---
 
 ## 🔌 Rotas e Endpoints Principais
 
 ### Interface web
-| Rota | Descrição |
-|---|---|
-| `/` | landing page da aplicação |
-| `/cadastro` | cadastro do usuário via fluxo web |
-| `/login` | autenticação via formulário |
-| `/logout` | encerramento da sessão |
-| `/perfil` | página do perfil autenticado |
-| `/perfil/editar` | edição de perfil |
-| `/clientes` | gestão web de clientes |
-| `/pedidos` | área de pedidos do cliente |
-| `/empresa/pedidos` | painel operacional da empresa |
-| `/banco/pedidos` | painel operacional do banco |
-| `/admin/pedidos` | rota de redirecionamento administrativo |
+
+| Rota               | Descrição                               |
+| ------------------ | --------------------------------------- |
+| `/`                | landing page da aplicação               |
+| `/cadastro`        | cadastro do usuário via fluxo web       |
+| `/login`           | autenticação via formulário             |
+| `/logout`          | encerramento da sessão                  |
+| `/perfil`          | página do perfil autenticado            |
+| `/perfil/editar`   | edição de perfil                        |
+| `/clientes`        | gestão web de clientes                  |
+| `/pedidos`         | área de pedidos do cliente              |
+| `/empresa/pedidos` | painel operacional da empresa           |
+| `/banco/pedidos`   | painel operacional do banco             |
+| `/admin/pedidos`   | rota de redirecionamento administrativo |
 
 ### API REST
-| Método | Endpoint | Descrição |
-|---|---|---|
-| `POST` | `/api/auth/cadastro` | cadastra usuário e autentica |
-| `POST` | `/api/auth/login` | autentica por e-mail e senha |
-| `GET` | `/api/auth/me` | retorna usuário autenticado via cookie |
-| `POST` | `/api/auth/logout` | encerra a sessão |
-| `GET` | `/api/clientes` | lista clientes |
-| `GET` | `/api/clientes/{id}` | busca cliente por id |
-| `POST` | `/api/clientes` | cria cliente |
-| `PUT` | `/api/clientes/{id}` | atualiza cliente |
-| `DELETE` | `/api/clientes/{id}` | remove cliente |
+
+| Método   | Endpoint             | Descrição                              |
+| -------- | -------------------- | -------------------------------------- |
+| `POST`   | `/api/auth/cadastro` | cadastra usuário e autentica           |
+| `POST`   | `/api/auth/login`    | autentica por e-mail e senha           |
+| `GET`    | `/api/auth/me`       | retorna usuário autenticado via cookie |
+| `POST`   | `/api/auth/logout`   | encerra a sessão                       |
+| `GET`    | `/api/clientes`      | lista clientes                         |
+| `GET`    | `/api/clientes/{id}` | busca cliente por id                   |
+| `POST`   | `/api/clientes`      | cria cliente                           |
+| `PUT`    | `/api/clientes/{id}` | atualiza cliente                       |
+| `DELETE` | `/api/clientes/{id}` | remove cliente                         |
 
 > O detalhamento fino dos payloads pode ser consultado diretamente pela interface Swagger.
 
 ---
 
 ## 👥 Perfis de Acesso
+
 O domínio trabalha atualmente com três perfis principais, representados por `PerfilAcesso`:
 
-| Perfil | Papel no sistema | Acessos típicos |
-|---|---|---|
-| `CLIENTE` | usuário final que solicita e acompanha o pedido | perfil, criação e consulta dos próprios pedidos |
-| `EMPRESA` | contexto operacional da empresa | acompanhamento operacional, recusa de pedido, contrato |
-| `BANCO` | contexto financeiro | parecer financeiro, contrato de crédito e consulta de pedidos |
+| Perfil    | Papel no sistema                                | Acessos típicos                                               |
+| --------- | ----------------------------------------------- | ------------------------------------------------------------- |
+| `CLIENTE` | usuário final que solicita e acompanha o pedido | perfil, criação e consulta dos próprios pedidos               |
+| `EMPRESA` | contexto operacional da empresa                 | acompanhamento operacional, recusa de pedido, contrato        |
+| `BANCO`   | contexto financeiro                             | parecer financeiro, contrato de crédito e consulta de pedidos |
 
 A autenticação é baseada no cookie `vrumm_cliente_id`, emitido após login ou cadastro.
 
@@ -463,6 +529,7 @@ A autenticação é baseada no cookie `vrumm_cliente_id`, emitido após login ou
 ## 🔄 Fluxos Principais
 
 ### 1. Cadastro e autenticação
+
 1. o usuário acessa a landing page ou formulário de cadastro;
 2. envia os dados de cadastro ou login;
 3. a aplicação valida o usuário na camada de aplicação;
@@ -470,6 +537,7 @@ A autenticação é baseada no cookie `vrumm_cliente_id`, emitido após login ou
 5. o sistema passa a reconhecer o usuário autenticado nas próximas requisições.
 
 ### 2. Criação e acompanhamento de pedido
+
 1. o cliente autenticado acessa a área de pedidos;
 2. seleciona um automóvel disponível e preenche os dados da solicitação;
 3. o módulo `pedido` cria a solicitação e persiste o estado inicial;
@@ -477,6 +545,7 @@ A autenticação é baseada no cookie `vrumm_cliente_id`, emitido após login ou
 5. o pedido pode evoluir para análise, pagamento, contrato ou encerramento.
 
 ### 3. Avaliação financeira e formalização
+
 1. a empresa ou o banco acessa os painéis de pedidos;
 2. o banco registra avaliação financeira e, quando aplicável, contrato de crédito;
 3. a empresa registra o contrato operacional;
@@ -486,6 +555,7 @@ A autenticação é baseada no cookie `vrumm_cliente_id`, emitido após login ou
 ---
 
 ## 📁 Estrutura de Pastas
+
 ```txt
 VRUMMAUTOMOVEIS/
 ├── .vscode/                         # Configurações locais do editor
@@ -496,12 +566,12 @@ VRUMMAUTOMOVEIS/
 │   │   │   │   └── com/vrumm/
 │   │   │   │       ├── auth/        # Autenticação, sessão e controle de acesso
 │   │   │   │       ├── automovel/   # Domínio de veículos
-│   │   │   │       ├── banco/       # Domínio relacionado a instituições bancárias
+│   │   │   │       ├── agente/      # Banco e empresa
 │   │   │   │       ├── cliente/     # Cadastro, validações e fluxo de clientes
 │   │   │   │       ├── contrato/    # Contratos e regras associadas
 │   │   │   │       ├── pedido/      # Solicitações, análises e fluxo principal de pedidos
 │   │   │   │       ├── shared/      # Componentes compartilhados entre módulos
-│   │   │   │       └── config/      # Configurações técnicas da aplicação
+│   │   │   │       └── site/        # Landing page e páginas base
 │   │   │   └── resources/
 │   │   │       ├── views/           # Templates Thymeleaf
 │   │   │       ├── static/          # CSS, JS, imagens e arquivos públicos
@@ -529,6 +599,7 @@ VRUMMAUTOMOVEIS/
 ```
 
 ### Leitura rápida da estrutura
+
 - `auth/` → autenticação e sessão;
 - `cliente/` → usuários, perfil e cadastro;
 - `automovel/` → veículos;
@@ -541,48 +612,63 @@ VRUMMAUTOMOVEIS/
 ---
 
 ## 📖 Documentação Técnica
+
 - **Swagger UI:** `/swagger-ui/`
 - **Especificação OpenAPI gerada:** `/swagger/`
-- **Migrações de banco:** `src/main/resources/db/migration`
+- **Migrações de banco:** [`backend/src/main/resources/db/migration`](backend/src/main/resources/db/migration)
 
 ### Migrations presentes
-O projeto já possui migrações versionadas (`V1` a `V10`) cobrindo, entre outros pontos:
+
+O projeto já possui migrações versionadas (`V1` a `V12`) cobrindo, entre outros pontos:
+
 - criação de cliente;
 - criação de automóvel;
 - criação e evolução do fluxo de pedido;
 - expansão do modelo de cliente e pedido;
 - criação de entidades de empresa, banco e contratos;
-- inclusão de avaliação financeira.
+- inclusão de avaliação financeira;
+- obrigatoriedade de logradouro do cliente (`V11`);
+- ajuste do fluxo de pagamento bancário (`V12`).
 
 ---
 
 ## 🧯 Troubleshooting
 
 ### 1. Erro ao iniciar por falha no banco
+
 Verifique:
+
 - se o PostgreSQL está rodando;
 - se o banco `vrumm_automoveis` existe;
 - se usuário e senha batem com `application.properties` ou com as variáveis de ambiente.
 
 ### 2. Migração Flyway falhou
+
 Se houver mudança manual em migration já aplicada, o Flyway pode acusar checksum mismatch. Nesse caso, revise a migration ou use `repair` apenas quando fizer sentido e com entendimento do impacto.
 
 ### 3. Página inicial retorna erro
+
 Confirme que:
+
 - `micronaut.views.thymeleaf.enabled=true` está ativo;
-- os templates em `src/main/resources/views` existem;
+- os templates em `backend/src/main/resources/views` existem;
 - os recursos estáticos estão corretamente mapeados.
 
 ### 4. Swagger não abre
+
 Confirme se a aplicação subiu corretamente e se os mapeamentos abaixo permanecem habilitados:
+
 - `/swagger/**`
 - `/swagger-ui/**`
 
 ### 5. Login parece funcionar, mas usuário não permanece autenticado
+
 Verifique se o cookie `vrumm_cliente_id` está sendo emitido e reenviado pelo navegador nas próximas requisições.
 
 ### 6. Problemas ao subir com Docker
+
 Confirme que:
+
 - o `Dockerfile` está dentro de `backend/`;
 - o `docker-compose.yml` está dentro de `backend/`;
 - a porta `8080` não está ocupada por outro processo;
@@ -590,18 +676,23 @@ Confirme que:
 
 ---
 
+## Contribuição
+
+Projeto em equipe. Use issue concreta, branch própria e pull request para revisão independente. Preserve autoria e contratos HTTP; registre o ambiente de banco e as verificações executadas. Os PRs de revisão abertos podem tratar mudanças de código além desta documentação.
+
 ## 👥 Autores
 
 Projeto desenvolvido em grupo.
 
-| Nome | GitHub | LinkedIn |
-|------|--------|----------|
-| Pedro H. S. | https://github.com/PHnsilva | https://www.linkedin.com/in/phnsilva1/ |
-| Felipe Parreiras | https://github.com/FelipeParreiras | https://www.linkedin.com/in/felipe-parreiras04/ |
-| Gabriel Nonato | https://github.com/GpNonato | https://www.linkedin.com/in/gabriel-nonato-3a3a98376/ |
+| Nome             | GitHub                             | LinkedIn                                              |
+| ---------------- | ---------------------------------- | ----------------------------------------------------- |
+| Pedro H. S.      | https://github.com/PHnsilva        | https://www.linkedin.com/in/phnsilva1/                |
+| Felipe Parreiras | https://github.com/FelipeParreiras | https://www.linkedin.com/in/felipe-parreiras04/       |
+| Gabriel Nonato   | https://github.com/GpNonato        | https://www.linkedin.com/in/gabriel-nonato-3a3a98376/ |
 
 ---
 
 ## 📄 Licença
+
 Este projeto está sob a licença **MIT**.  
-Consulte o arquivo `LICENSE` para mais detalhes.
+Consulte o arquivo [LICENSE](LICENSE) para mais detalhes.
